@@ -55,7 +55,7 @@ development_status:
   e3-2-job-status-tool: backlog
   e3-3-job-result-tool: backlog
   e3-4-cancel-job-tool: backlog
-  e3-5-context-guard: backlog
+  e3-5-context-guard: done
   e3-6-setup-guide: backlog
 
   # Epic 4: Optional Streaming Gateway
