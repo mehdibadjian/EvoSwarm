@@ -8,7 +8,7 @@ story_location: docs/stories
 development_status:
   # Epics
   epic-0: in-progress
-  epic-1: backlog
+  epic-1: in-progress
   epic-2: backlog
   epic-3: backlog
   epic-4: backlog
@@ -27,7 +27,7 @@ development_status:
 
   # Epic 1: Evolve CLI and Fitness
   e1-1-start-a-job-from-the-cli: backlog
-  e1-2-model-roles-in-config: backlog
+  e1-2-model-roles-in-config: ready-for-dev
   e1-3-seed-the-first-generation: backlog
   e1-4-mutation-with-error-feedback: backlog
   e1-5-crossover-of-two-parents: backlog
