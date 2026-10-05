@@ -308,6 +308,7 @@ dependencies = [
  "async-trait",
  "clap",
  "evoswarm-core",
+ "evoswarm-gateway",
  "evoswarm-ledger",
  "evoswarm-sandbox",
  "git2",
@@ -366,10 +367,12 @@ name = "evoswarm-gateway"
 version = "0.1.0"
 dependencies = [
  "axum",
+ "bytes",
  "evoswarm-core",
  "futures",
  "http-body-util",
  "reqwest",
+ "rusqlite",
  "serde",
  "serde_json",
  "sha2",
@@ -377,6 +380,7 @@ dependencies = [
  "thiserror",
  "tokio",
  "tower",
+ "uuid",
 ]
 
 [[package]]

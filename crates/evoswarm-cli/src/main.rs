@@ -47,6 +47,18 @@ enum Command {
         #[arg(long)]
         repo: Option<PathBuf>,
     },
+    /// Print local gateway token/cost usage by day (e4-2).
+    Usage {
+        /// Only include usage on/after this UTC date (YYYY-MM-DD); defaults to 7 days back.
+        #[arg(long)]
+        since: Option<String>,
+        /// Path to the gateway usage database; defaults to `<repo>/.evoswarm/usage.db`.
+        #[arg(long)]
+        db: Option<PathBuf>,
+        /// Repository root used to locate the default usage db; defaults to current dir.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -113,6 +125,41 @@ async fn main() -> StdExitCode {
                 Err(e) => {
                     eprintln!("{}", e);
                     e.exit_code().to_std()
+                }
+            }
+        }
+        Command::Usage { since, db, repo } => {
+            use evoswarm_cli::usage::{default_since_unix, parse_since_date, run_usage_report};
+            use evoswarm_gateway::usage::UsagePricing;
+
+            let db_path = db.unwrap_or_else(|| {
+                repo.unwrap_or_else(|| PathBuf::from("."))
+                    .join(".evoswarm/usage.db")
+            });
+            let since_unix = match since.as_deref() {
+                Some(date) => match parse_since_date(date) {
+                    Ok(ts) => ts,
+                    Err(e) => {
+                        eprintln!("{e}");
+                        return evoswarm_cli::ExitCode::Validation.to_std();
+                    }
+                },
+                None => {
+                    let now = std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .map(|d| d.as_secs())
+                        .unwrap_or(0);
+                    default_since_unix(now)
+                }
+            };
+            match run_usage_report(&db_path, since_unix, &UsagePricing::default()) {
+                Ok(report) => {
+                    print!("{report}");
+                    evoswarm_cli::ExitCode::Ok.to_std()
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    evoswarm_cli::ExitCode::Validation.to_std()
                 }
             }
         }

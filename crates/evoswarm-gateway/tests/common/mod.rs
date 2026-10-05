@@ -28,7 +28,7 @@ use tokio::task::JoinHandle;
 /// reference the gateway must reproduce; it includes a `thinking` block (frames 1-3) and a
 /// `tool_use` block (frames 4-6) so AC2 has something to assert on.
 pub const SSE_FRAMES: &[&str] = &[
-    "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_01\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3-5-sonnet\",\"content\":[],\"usage\":{\"input_tokens\":25,\"output_tokens\":1}}}\n\n",
+    "event: message_start\ndata: {\"type\":\"message_start\",\"message\":{\"id\":\"msg_01\",\"type\":\"message\",\"role\":\"assistant\",\"model\":\"claude-3-5-sonnet\",\"content\":[],\"usage\":{\"input_tokens\":25,\"cache_read_input_tokens\":10,\"output_tokens\":1}}}\n\n",
     "event: content_block_start\ndata: {\"type\":\"content_block_start\",\"index\":0,\"content_block\":{\"type\":\"thinking\",\"thinking\":\"\"}}\n\n",
     "event: content_block_delta\ndata: {\"type\":\"content_block_delta\",\"index\":0,\"delta\":{\"type\":\"thinking_delta\",\"thinking\":\"Let me read the file first.\"}}\n\n",
     "event: content_block_stop\ndata: {\"type\":\"content_block_stop\",\"index\":0}\n\n",
@@ -167,6 +167,35 @@ pub async fn spawn_gateway(upstream_base_url: &str) -> Gateway {
     let config = GatewayConfig::new(upstream_base_url, "127.0.0.1:0".parse().unwrap())
         .expect("valid config");
     let state = ProxyState::new(config).expect("proxy state");
+    let app = router(Arc::new(state));
+
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind gateway");
+    let addr = listener.local_addr().expect("gateway addr");
+    let handle = tokio::spawn(async move {
+        axum::serve(listener, app).await.expect("serve gateway");
+    });
+
+    Gateway {
+        base_url: format!("http://127.0.0.1:{}", addr.port()),
+        handle,
+    }
+}
+
+/// Boots the gateway with e4-2 usage logging enabled, persisting to `usage_db`.
+pub async fn spawn_gateway_with_usage(
+    upstream_base_url: &str,
+    usage_db: &std::path::Path,
+) -> Gateway {
+    use evoswarm_gateway::config::GatewayConfig;
+    use evoswarm_gateway::proxy::{router, ProxyState};
+    use evoswarm_gateway::usage::UsageStore;
+
+    let config = GatewayConfig::new(upstream_base_url, "127.0.0.1:0".parse().unwrap())
+        .expect("valid config");
+    let store = Arc::new(UsageStore::open(usage_db).expect("usage store"));
+    let state = ProxyState::new_with_usage(config, Some(store)).expect("proxy state");
     let app = router(Arc::new(state));
 
     let listener = TcpListener::bind("127.0.0.1:0")
