@@ -66,12 +66,12 @@ development_status:
   e4-5-latency-budget-in-ci: backlog
 
   # Epic 5: MAP-Elites and Multi-Stack Expansion
-  e5-1-map-elites-grid: backlog
+  e5-1-map-elites-grid: review  # SEAM: binning/replacement verified against in-process RecordingCellSink; FalkorDB Cell-node write needs redis-compatible FalkorDB (roadmap §5)
   e5-2-selection-mode-comparison: backlog
   e5-3-java-stack: backlog
   e5-4-c-and-cpp-stack: backlog
   e5-5-test-triage-page: backlog
-  e5-6-archive-health-report: backlog
+  e5-6-archive-health-report: review  # SEAM: occupancy/heatmap verified against in-process archive; per-generation Cell-node history needs FalkorDB (roadmap §5)
 
 execution_tiers:
   # Epic 0 Tiers
