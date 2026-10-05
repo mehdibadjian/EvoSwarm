@@ -1,3 +1,21 @@
+//! EvoSwarm sandbox crate: isolation boundary for untrusted candidate code.
+//!
+//! This crate defines the `SandboxBackend` trait (ARCHITECTURE-SPINE §3.1) and
+//! provides a bubblewrap-backed implementation that enforces AD-1 invariants:
+//! - Network egress forbidden (`--unshare-all`)
+//! - Test directories mounted read-only (`--ro-bind`)
+//! - Ephemeral per-run workdirs on tmpfs
+//! - Wall-clock timeouts via tokio + SIGKILL
+//!
+//! Stories implemented:
+//! - e0-1: Sandbox runner interface (BwrapBackend)
+//! - e0-5: Python stack (venv cache, JUnit XML parsing)
+//! - e0-7: Tamper-proof tests (read-only mounts, harness override detection)
+
+pub mod bwrap;
+pub mod stacks;
+pub mod tamper;
+
 use std::path::{Path, PathBuf};
 
 use async_trait::async_trait;
@@ -43,3 +61,8 @@ pub trait SandboxBackend: Send + Sync {
     /// Collects logs and removes the ephemeral workdir.
     async fn collect(&self, workdir: PathBuf) -> Result<(), SandboxError>;
 }
+
+// Re-export key types for convenience
+pub use bwrap::BwrapBackend;
+pub use stacks::python::{lockfile_hash, parse_junit_outcomes, parse_junit_xml, JunitSummary, TestOutcome, TestStatus};
+pub use tamper::{detect_harness_override, hash_tests_dir, PROHIBITED_HARNESS_FILES};
