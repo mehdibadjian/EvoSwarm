@@ -13,6 +13,7 @@
 //! - e0-7: Tamper-proof tests (read-only mounts, harness override detection)
 
 pub mod bwrap;
+pub mod calibration;
 pub mod stacks;
 pub mod tamper;
 
