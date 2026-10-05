@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-9-adversary-tests`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Developer
-- **Status:** ready-for-dev
+- **Priority:** Should
+- **Sizing:** M
+- **Execution Tier:** `pro`
+- **Dependencies:** `e1-6-hard-gates`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Governed by AD-5. Adversary model drafts $K$ candidate tests. Broken tests that 
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Adversary tests failing hard gates or blocking build verification.

@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-10-budget-enforcement`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Developer
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** M
+- **Execution Tier:** `flash`
+- **Dependencies:** `e1-2-model-roles-in-config`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -14,10 +18,10 @@
 ---
 
 ## 3. Problem Statement & Architectural Context
-Governed by AD-6. Checks projected costs against budget caps prior to network dispatch. Early stop terminates if no score improvement across 2 consecutive generations. Emits status `budget_exhausted` and returns best verified candidate.
+Governed by AD-6. Checks projected costs against budget caps prior to network dispatch. Early stop terminates if no score improvement across 2 consecutive generations. Emits status `budget_exhausted` and returns the best verified candidate.
 
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Dynamic credit card charging or billing API integrations.

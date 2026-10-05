@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-4-mutation-with-error-feedback`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Developer
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** M
+- **Execution Tier:** `pro`
+- **Dependencies:** `e1-3-seed-the-first-generation`, `e1-6-hard-gates`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Governed by AD-5. Failed candidates contain high-value signal. The compiler outp
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Multi-turn conversational debates with the model during a single mutation.
