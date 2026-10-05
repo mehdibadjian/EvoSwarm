@@ -6,12 +6,14 @@
 //! seam.
 
 pub mod adversary;
+pub mod archive_report;
 pub mod budget;
 pub mod crossover;
 pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
 pub mod feedback;
+pub mod map_elites;
 pub mod mutation;
 pub mod recovery;
 pub mod seeding;
@@ -21,6 +23,7 @@ pub use adversary::{
     compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
     SuspectEvidence,
 };
+pub use archive_report::{health_report, render_heatmap, ArchiveHealth};
 pub use budget::{
     BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, CrossoverBudget, ExhaustedKind,
     RoleRates, CROSSOVER_CAP_RATIO,
@@ -34,6 +37,9 @@ pub use dispatch::{
 };
 pub use early_stop::{should_stop, StopReason};
 pub use feedback::{build as build_feedback, render_clamped, FailureFeedback, TRUNCATION_MARKER};
+pub use map_elites::{
+    ArchiveEntry, CellCoord, CellSink, GridConfig, MapElitesArchive, RecordingCellSink, GRID_DIM,
+};
 pub use mutation::{mutate, MutationContext, MutationDeps, MutationError};
 pub use recovery::{recover, ResumableJob};
 pub use seeding::{
