@@ -14,6 +14,7 @@
 
 pub mod bwrap;
 pub mod calibration;
+pub mod red_team;
 pub mod stacks;
 pub mod tamper;
 
