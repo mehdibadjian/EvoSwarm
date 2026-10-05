@@ -5,6 +5,7 @@
 //! (e1-8); the generation operators (e1-3/4/5/9) arrive in Wave 3 behind the `ModelClient`
 //! seam.
 
+pub mod adversary;
 pub mod budget;
 pub mod crossover;
 pub mod dedup;
@@ -16,6 +17,10 @@ pub mod recovery;
 pub mod seeding;
 pub mod selection;
 
+pub use adversary::{
+    compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
+    SuspectEvidence,
+};
 pub use budget::{
     BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, CrossoverBudget, ExhaustedKind,
     RoleRates, CROSSOVER_CAP_RATIO,

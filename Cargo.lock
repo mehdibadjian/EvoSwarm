@@ -265,6 +265,7 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "evoswarm-core",
+ "evoswarm-fitness",
  "evoswarm-ledger",
  "evoswarm-models",
  "evoswarm-sandbox",

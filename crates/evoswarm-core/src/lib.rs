@@ -1,3 +1,4 @@
+pub mod adversary;
 pub mod candidate;
 pub mod execution;
 pub mod holdout;
@@ -8,6 +9,7 @@ pub mod provenance;
 pub mod report_model;
 pub mod usage;
 
+pub use adversary::{AdversaryStatus, AdversaryTest};
 pub use candidate::Candidate;
 pub use execution::{ExecutionResult, RunStatus, SandboxProfile};
 pub use holdout::{HoldoutReason, TestSplit};
