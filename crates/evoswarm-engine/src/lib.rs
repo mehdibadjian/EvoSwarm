@@ -12,6 +12,7 @@ pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
 pub mod feedback;
+pub mod map_elites;
 pub mod mutation;
 pub mod recovery;
 pub mod seeding;
@@ -34,6 +35,9 @@ pub use dispatch::{
 };
 pub use early_stop::{should_stop, StopReason};
 pub use feedback::{build as build_feedback, render_clamped, FailureFeedback, TRUNCATION_MARKER};
+pub use map_elites::{
+    ArchiveEntry, CellCoord, CellSink, GridConfig, MapElitesArchive, RecordingCellSink, GRID_DIM,
+};
 pub use mutation::{mutate, MutationContext, MutationDeps, MutationError};
 pub use recovery::{recover, ResumableJob};
 pub use seeding::{
