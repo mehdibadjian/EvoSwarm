@@ -6,6 +6,7 @@
 //! seam.
 
 pub mod adversary;
+pub mod archive_report;
 pub mod budget;
 pub mod crossover;
 pub mod dedup;
@@ -22,6 +23,7 @@ pub use adversary::{
     compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
     SuspectEvidence,
 };
+pub use archive_report::{health_report, render_heatmap, ArchiveHealth};
 pub use budget::{
     BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, CrossoverBudget, ExhaustedKind,
     RoleRates, CROSSOVER_CAP_RATIO,
