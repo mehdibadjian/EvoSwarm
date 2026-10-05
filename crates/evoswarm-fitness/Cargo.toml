@@ -1,0 +1,11 @@
+[package]
+name = "evoswarm-fitness"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+evoswarm-core = { workspace = true }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tempfile = "3"
