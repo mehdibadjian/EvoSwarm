@@ -6,6 +6,7 @@
 //! seam.
 
 pub mod budget;
+pub mod crossover;
 pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
@@ -16,7 +17,11 @@ pub mod seeding;
 pub mod selection;
 
 pub use budget::{
-    BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, ExhaustedKind, RoleRates,
+    BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, CrossoverBudget, ExhaustedKind,
+    RoleRates, CROSSOVER_CAP_RATIO,
+};
+pub use crossover::{
+    crossover, rank_pairs, CrossoverContext, CrossoverDeps, CrossoverError, MeasuredCandidate,
 };
 pub use dedup::diff_hash;
 pub use dispatch::{
