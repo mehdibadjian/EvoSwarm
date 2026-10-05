@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-6-approve-candidate-tests` (Short: `e2-6`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Reviewer
 - **Priority:** Should
 - **Sizing:** S
@@ -37,8 +37,8 @@ Governed by AD-5. CLI command `evoswarm approve-tests <job> --ids <ids>` promote
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/cli/test_approve_tests.rs::test_promote_adversary_test`](file:///workspace/calm-faraday/tests/cli/test_approve_tests.rs): Checks status updated to 'trusted' in FalkorDB.
-- [`tests/cli/test_approve_tests.rs::test_rejected_test_suppression`](file:///workspace/calm-faraday/tests/cli/test_approve_tests.rs): Verifies rejected test marked and omitted from future proposals.
+- `tests/cli/test_approve_tests.rs::test_promote_adversary_test`: Checks status updated to 'trusted' in FalkorDB.
+- `tests/cli/test_approve_tests.rs::test_rejected_test_suppression`: Verifies rejected test marked and omitted from future proposals.
 
 ### Verification Gate Command
 ```bash

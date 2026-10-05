@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-4-resource-limits` (Short: `e0-4`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Security Reviewer
 - **Priority:** Must
 - **Sizing:** M
@@ -40,9 +40,9 @@ Governed by AD-1. Uses `systemd-run --user --scope` with `MemoryMax`, `TasksMax`
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_resource_limits.rs::test_fork_bomb_contained`](file:///workspace/calm-faraday/tests/test_resource_limits.rs): Spawns a bash fork bomb `:(){ :|:& };:` and verifies termination in <10s.
-- [`tests/test_resource_limits.rs::test_memory_cap_enforcement`](file:///workspace/calm-faraday/tests/test_resource_limits.rs): Allocates 4GB via Python in a 512MB limit sandbox; verifies RunStatus::Oom.
-- [`tests/test_resource_limits.rs::test_wall_time_sigkill`](file:///workspace/calm-faraday/tests/test_resource_limits.rs): Executes `sleep 60` with a 2s timeout and confirms kill within 7s.
+- `tests/test_resource_limits.rs::test_fork_bomb_contained`: Spawns a bash fork bomb `:(){ :|:& };:` and verifies termination in <10s.
+- `tests/test_resource_limits.rs::test_memory_cap_enforcement`: Allocates 4GB via Python in a 512MB limit sandbox; verifies RunStatus::Oom.
+- `tests/test_resource_limits.rs::test_wall_time_sigkill`: Executes `sleep 60` with a 2s timeout and confirms kill within 7s.
 
 ### Verification Gate Command
 ```bash

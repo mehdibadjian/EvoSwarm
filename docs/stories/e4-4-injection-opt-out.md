@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e4-4-injection-opt-out` (Short: `e4-4`)
-- **Epic:** [Optional Gateway](file:///workspace/calm-faraday/docs/epics/epic-4.md)
+- **Epic:** [Optional Gateway](../epics/epic-4-optional-gateway.md)
 - **Persona:** Developer
 - **Priority:** Should
 - **Sizing:** S
@@ -37,8 +37,8 @@ Supports header `x-evoswarm-inject: off` or config flag `gateway.inject = false`
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/gateway/test_opt_out.rs::test_header_opt_out`](file:///workspace/calm-faraday/tests/gateway/test_opt_out.rs): Sends `x-evoswarm-inject: off` and confirms zero injection.
-- [`tests/gateway/test_opt_out.rs::test_config_flag_opt_out`](file:///workspace/calm-faraday/tests/gateway/test_opt_out.rs): Sets `inject = false` in config and confirms bypass.
+- `tests/gateway/test_opt_out.rs::test_header_opt_out`: Sends `x-evoswarm-inject: off` and confirms zero injection.
+- `tests/gateway/test_opt_out.rs::test_config_flag_opt_out`: Sets `inject = false` in config and confirms bypass.
 
 ### Verification Gate Command
 ```bash

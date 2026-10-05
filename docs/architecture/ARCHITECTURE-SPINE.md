@@ -34,9 +34,9 @@ flowchart TD
         LLM[Upstream Model Provider: Claude / Anthropic]
     end
 
-    CC -->|ANTHROPIC_BASE_URL (Optional)| GW
+    CC -->|"ANTHROPIC_BASE_URL (Optional)"| GW
     GW -->|Forward SSE Stream| LLM
-    GW -.->|Retrieve Exemplars (<20ms)| MEM
+    GW -.->|"Retrieve Exemplars (<20ms)"| MEM
 
     CC -->|MCP Tools: evolve, job_status, job_result| MCP
     CLI -->|CLI Commands: run, status, lineage| Q

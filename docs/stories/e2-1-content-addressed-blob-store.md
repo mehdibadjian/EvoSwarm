@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-1-content-addressed-blob-store` (Short: `e2-1`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Operator
 - **Priority:** Must
 - **Sizing:** M
@@ -40,9 +40,9 @@ Governed by AD-3. Stores immutable files under `.evoswarm/blobs/<sha256>`. Provi
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/storage/test_blob_store.rs::test_deduplication`](file:///workspace/calm-faraday/tests/storage/test_blob_store.rs): Writes identical payload twice and verifies single file.
-- [`tests/storage/test_blob_store.rs::test_byte_exact_read`](file:///workspace/calm-faraday/tests/storage/test_blob_store.rs): Verifies read matches original write byte-for-byte.
-- [`tests/storage/test_blob_store.rs::test_gc_sweep`](file:///workspace/calm-faraday/tests/storage/test_blob_store.rs): Sweeps unreferenced blobs older than 7 days.
+- `tests/storage/test_blob_store.rs::test_deduplication`: Writes identical payload twice and verifies single file.
+- `tests/storage/test_blob_store.rs::test_byte_exact_read`: Verifies read matches original write byte-for-byte.
+- `tests/storage/test_blob_store.rs::test_gc_sweep`: Sweeps unreferenced blobs older than 7 days.
 
 ### Verification Gate Command
 ```bash

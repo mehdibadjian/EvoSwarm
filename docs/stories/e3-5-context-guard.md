@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-5-context-guard` (Short: `e3-5`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Security Reviewer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,9 +38,9 @@ Filters outgoing prompt context against per-job path allowlist. Scans contents w
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/security/test_context_guard.rs::test_path_allowlist_enforcement`](file:///workspace/calm-faraday/tests/security/test_context_guard.rs): Ensures files outside allowlist excluded.
-- [`tests/security/test_context_guard.rs::test_secret_redaction`](file:///workspace/calm-faraday/tests/security/test_context_guard.rs): Injects mock API key and verifies replacement with `[REDACTED_SECRET]`.
-- [`tests/security/test_context_guard.rs::test_env_pem_exclusion`](file:///workspace/calm-faraday/tests/security/test_context_guard.rs): Places `.env` and `cert.pem` in repo; asserts absent from prompt.
+- `tests/security/test_context_guard.rs::test_path_allowlist_enforcement`: Ensures files outside allowlist excluded.
+- `tests/security/test_context_guard.rs::test_secret_redaction`: Injects mock API key and verifies replacement with `[REDACTED_SECRET]`.
+- `tests/security/test_context_guard.rs::test_env_pem_exclusion`: Places `.env` and `cert.pem` in repo; asserts absent from prompt.
 
 ### Verification Gate Command
 ```bash

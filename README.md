@@ -46,9 +46,9 @@ flowchart TD
         API[Claude / Upstream Model API]
     end
 
-    CC -->|ANTHROPIC_BASE_URL (Optional)| GW
+    CC -->|"ANTHROPIC_BASE_URL (Optional)"| GW
     GW -->|Forward SSE Stream| API
-    GW -.->|Retrieve Exemplars (<20ms)| MEM
+    GW -.->|"Retrieve Exemplars (<20ms)"| MEM
 
     CC -->|MCP Tool: evolve, job_status, job_result| MCP
     CLI -->|CLI: run, status, lineage| Q
@@ -138,12 +138,12 @@ The project follows a phased roadmap where each phase delivers an independently 
 
 | Epic | Specification Document | Exit Gate Criteria |
 |---|---|---|
-| **Epic 0: The Crucible** | [docs/epics/epic-0-the-crucible.md](file:///workspace/calm-faraday/docs/epics/epic-0-the-crucible.md) | 100 baseline runs with 0 escapes; network and fork-bomb contained; limits calibrated. |
-| **Epic 1: Evolve CLI & Fitness** | [docs/epics/epic-1-evolve-cli-and-fitness.md](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md) | **Beats single-shot generation by $\ge 15$ points** on 30-task benchmark at equal token budget. |
-| **Epic 2: System 1 Memory & Replay** | [docs/epics/epic-2-system-1-memory-and-replay.md](file:///workspace/calm-faraday/docs/epics/epic-2-system-1-memory-and-replay.md) | Replay never serves a stale winner; seeding cuts token spend by $\ge 30\%$. |
-| **Epic 3: Claude Code Integration** | [docs/epics/epic-3-claude-code-integration-mcp.md](file:///workspace/calm-faraday/docs/epics/epic-3-claude-code-integration-mcp.md) | Claude Code delegates task via `evolve`, fetches patch, and verifies locally with 0 intervention. |
-| **Epic 4: Optional Streaming Gateway** | [docs/epics/epic-4-optional-gateway.md](file:///workspace/calm-faraday/docs/epics/epic-4-optional-gateway.md) | Adds $< 50$ ms TTFT at p95 under 20 concurrent streams with byte-for-byte fidelity. |
-| **Epic 5: MAP-Elites & More Stacks** | [docs/epics/epic-5-map-elites-and-more-stacks.md](file:///workspace/calm-faraday/docs/epics/epic-5-map-elites-and-more-stacks.md) | $4 \times 4$ archive matches/beats Top-K; Java and C/C++ pass red-team containment. |
+| **Epic 0: The Crucible** | [docs/epics/epic-0-the-crucible.md](docs/epics/epic-0-the-crucible.md) | 100 baseline runs with 0 escapes; network and fork-bomb contained; limits calibrated. |
+| **Epic 1: Evolve CLI & Fitness** | [docs/epics/epic-1-evolve-cli-and-fitness.md](docs/epics/epic-1-evolve-cli-and-fitness.md) | **Beats single-shot generation by $\ge 15$ points** on 30-task benchmark at equal token budget. |
+| **Epic 2: System 1 Memory & Replay** | [docs/epics/epic-2-system-1-memory-and-replay.md](docs/epics/epic-2-system-1-memory-and-replay.md) | Replay never serves a stale winner; seeding cuts token spend by $\ge 30\%$. |
+| **Epic 3: Claude Code Integration** | [docs/epics/epic-3-claude-code-integration-mcp.md](docs/epics/epic-3-claude-code-integration-mcp.md) | Claude Code delegates task via `evolve`, fetches patch, and verifies locally with 0 intervention. |
+| **Epic 4: Optional Streaming Gateway** | [docs/epics/epic-4-optional-gateway.md](docs/epics/epic-4-optional-gateway.md) | Adds $< 50$ ms TTFT at p95 under 20 concurrent streams with byte-for-byte fidelity. |
+| **Epic 5: MAP-Elites & More Stacks** | [docs/epics/epic-5-map-elites-and-more-stacks.md](docs/epics/epic-5-map-elites-and-more-stacks.md) | $4 \times 4$ archive matches/beats Top-K; Java and C/C++ pass red-team containment. |
 
 ---
 

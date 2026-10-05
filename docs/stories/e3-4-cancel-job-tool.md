@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-4-cancel-job-tool` (Short: `e3-4`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** S
@@ -38,8 +38,8 @@ Exposes MCP tool `cancel_job(id)`. Halts further model dispatch immediately afte
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/mcp/test_cancel_job.rs::test_cancel_running_job`](file:///workspace/calm-faraday/tests/mcp/test_cancel_job.rs): Cancels job and verifies no subsequent generations run.
-- [`tests/mcp/test_cancel_job.rs::test_cancel_idempotency`](file:///workspace/calm-faraday/tests/mcp/test_cancel_job.rs): Calls cancel twice and expects identical response.
+- `tests/mcp/test_cancel_job.rs::test_cancel_running_job`: Cancels job and verifies no subsequent generations run.
+- `tests/mcp/test_cancel_job.rs::test_cancel_idempotency`: Calls cancel twice and expects identical response.
 
 ### Verification Gate Command
 ```bash

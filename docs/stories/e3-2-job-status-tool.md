@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-2-job-status-tool` (Short: `e3-2`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** S
@@ -37,8 +37,8 @@ Exposes MCP tool `job_status(id)` returning state, current generation, best scor
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/mcp/test_job_status.rs::test_status_query`](file:///workspace/calm-faraday/tests/mcp/test_job_status.rs): Queries running job and asserts JSON schema.
-- [`tests/mcp/test_job_status.rs::test_status_not_found`](file:///workspace/calm-faraday/tests/mcp/test_job_status.rs): Queries nonexistent ID and checks error response.
+- `tests/mcp/test_job_status.rs::test_status_query`: Queries running job and asserts JSON schema.
+- `tests/mcp/test_job_status.rs::test_status_not_found`: Queries nonexistent ID and checks error response.
 
 ### Verification Gate Command
 ```bash

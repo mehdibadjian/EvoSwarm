@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-1-sandbox-runner-interface` (Short: `e0-1`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** M
@@ -40,9 +40,9 @@ Governed by AD-1. The search loop must remain completely decoupled from OS-level
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_sandbox_runner.rs::test_sandbox_runner_lifecycle_success`](file:///workspace/calm-faraday/tests/test_sandbox_runner.rs): Executes an echo command inside bwrap and verifies exit code 0, captured stdout, wall time > 0.
-- [`tests/test_sandbox_runner.rs::test_sandbox_runner_timeout_marking`](file:///workspace/calm-faraday/tests/test_sandbox_runner.rs): Executes `sleep 10` with a 1s limit and asserts status is `RunStatus::Timeout`.
-- [`tests/test_sandbox_runner.rs::test_sandbox_runner_concurrent_isolation`](file:///workspace/calm-faraday/tests/test_sandbox_runner.rs): Executes two concurrent runners writing to `/work/test.txt` and verifies distinct contents.
+- `tests/test_sandbox_runner.rs::test_sandbox_runner_lifecycle_success`: Executes an echo command inside bwrap and verifies exit code 0, captured stdout, wall time > 0.
+- `tests/test_sandbox_runner.rs::test_sandbox_runner_timeout_marking`: Executes `sleep 10` with a 1s limit and asserts status is `RunStatus::Timeout`.
+- `tests/test_sandbox_runner.rs::test_sandbox_runner_concurrent_isolation`: Executes two concurrent runners writing to `/work/test.txt` and verifies distinct contents.
 
 ### Verification Gate Command
 ```bash

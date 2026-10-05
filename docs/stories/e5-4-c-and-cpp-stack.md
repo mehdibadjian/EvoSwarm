@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-4-c-and-cpp-stack` (Short: `e5-4`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** M
@@ -38,9 +38,9 @@ Governed by AD-1. Configures CMake in tmpfs against read-only prebuilt test libr
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/stacks/test_cpp_stack.rs::test_cmake_tmpfs_build`](file:///workspace/calm-faraday/tests/stacks/test_cpp_stack.rs): Builds CMake candidate in ephemeral tmpfs.
-- [`tests/stacks/test_cpp_stack.rs::test_googletest_execution`](file:///workspace/calm-faraday/tests/stacks/test_cpp_stack.rs): Executes GoogleTest test suite offline.
-- [`tests/stacks/test_cpp_stack.rs::test_cpp_red_team_containment`](file:///workspace/calm-faraday/tests/stacks/test_cpp_stack.rs): Verifies red team attempts blocked in native sandbox.
+- `tests/stacks/test_cpp_stack.rs::test_cmake_tmpfs_build`: Builds CMake candidate in ephemeral tmpfs.
+- `tests/stacks/test_cpp_stack.rs::test_googletest_execution`: Executes GoogleTest test suite offline.
+- `tests/stacks/test_cpp_stack.rs::test_cpp_red_team_containment`: Verifies red team attempts blocked in native sandbox.
 
 ### Verification Gate Command
 ```bash

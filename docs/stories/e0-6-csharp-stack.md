@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-6-csharp-stack` (Short: `e0-6`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** L
@@ -38,9 +38,9 @@ Governed by AD-1. Pre-restores NuGet dependencies outside the sandbox to a hash-
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_csharp_stack.rs::test_nuget_cache_restore`](file:///workspace/calm-faraday/tests/test_csharp_stack.rs): Restores NuGet packages to isolated cache directory.
-- [`tests/test_csharp_stack.rs::test_dotnet_test_offline`](file:///workspace/calm-faraday/tests/test_csharp_stack.rs): Executes `dotnet test --no-restore` in offline bwrap container.
-- [`tests/test_csharp_stack.rs::test_missing_package_stale_cache_error`](file:///workspace/calm-faraday/tests/test_csharp_stack.rs): Injects unknown PackageReference and confirms diagnostic.
+- `tests/test_csharp_stack.rs::test_nuget_cache_restore`: Restores NuGet packages to isolated cache directory.
+- `tests/test_csharp_stack.rs::test_dotnet_test_offline`: Executes `dotnet test --no-restore` in offline bwrap container.
+- `tests/test_csharp_stack.rs::test_missing_package_stale_cache_error`: Injects unknown PackageReference and confirms diagnostic.
 
 ### Verification Gate Command
 ```bash

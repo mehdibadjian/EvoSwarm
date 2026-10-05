@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e4-1-transparent-pass-through` (Short: `e4-1`)
-- **Epic:** [Optional Gateway](file:///workspace/calm-faraday/docs/epics/epic-4.md)
+- **Epic:** [Optional Gateway](../epics/epic-4-optional-gateway.md)
 - **Persona:** Developer
 - **Priority:** Should
 - **Sizing:** L
@@ -39,9 +39,9 @@ Governed by AD-2. Built on Axum and Tokio. Forwards SSE events byte-for-byte; pr
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/gateway/test_sse_passthrough.rs::test_byte_for_byte_fidelity`](file:///workspace/calm-faraday/tests/gateway/test_sse_passthrough.rs): Streams recorded Anthropic SSE stream and compares SHA-256 hash.
-- [`tests/gateway/test_sse_passthrough.rs::test_thinking_blocks_intact`](file:///workspace/calm-faraday/tests/gateway/test_sse_passthrough.rs): Verifies thinking and tool_use blocks preserved.
-- [`tests/gateway/test_sse_passthrough.rs::test_upstream_error_propagation`](file:///workspace/calm-faraday/tests/gateway/test_sse_passthrough.rs): Mocks upstream 429 and asserts retry-after header forwarded.
+- `tests/gateway/test_sse_passthrough.rs::test_byte_for_byte_fidelity`: Streams recorded Anthropic SSE stream and compares SHA-256 hash.
+- `tests/gateway/test_sse_passthrough.rs::test_thinking_blocks_intact`: Verifies thinking and tool_use blocks preserved.
+- `tests/gateway/test_sse_passthrough.rs::test_upstream_error_propagation`: Mocks upstream 429 and asserts retry-after header forwarded.
 
 ### Verification Gate Command
 ```bash

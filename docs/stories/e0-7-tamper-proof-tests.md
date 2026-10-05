@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-7-tamper-proof-tests` (Short: `e0-7`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** S
@@ -39,8 +39,8 @@ Governed by AD-1 and AD-5. Candidate diffs must never touch `/tests`. Harness co
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_tamper_detection.rs::test_readonly_test_mount`](file:///workspace/calm-faraday/tests/test_tamper_detection.rs): Candidate writes to `tests/test_foo.py` and asserts EROFS.
-- [`tests/test_tamper_detection.rs::test_harness_override_rejection`](file:///workspace/calm-faraday/tests/test_tamper_detection.rs): Validates diff rejector flags `conftest.py` in patch root.
+- `tests/test_tamper_detection.rs::test_readonly_test_mount`: Candidate writes to `tests/test_foo.py` and asserts EROFS.
+- `tests/test_tamper_detection.rs::test_harness_override_rejection`: Validates diff rejector flags `conftest.py` in patch root.
 
 ### Verification Gate Command
 ```bash

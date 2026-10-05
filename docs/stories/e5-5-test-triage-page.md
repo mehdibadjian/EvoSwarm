@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-5-test-triage-page` (Short: `e5-5`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Reviewer
 - **Priority:** Could
 - **Sizing:** M
@@ -39,8 +39,8 @@ Lightweight web UI binding strictly to 127.0.0.1. Displays candidate adversary t
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/ui/test_triage_page.rs::test_binds_localhost_only`](file:///workspace/calm-faraday/tests/ui/test_triage_page.rs): Asserts server socket rejects non-loopback bind.
-- [`tests/ui/test_triage_page.rs::test_triage_approval_action`](file:///workspace/calm-faraday/tests/ui/test_triage_page.rs): Submits test approval and asserts promotion in DB.
+- `tests/ui/test_triage_page.rs::test_binds_localhost_only`: Asserts server socket rejects non-loopback bind.
+- `tests/ui/test_triage_page.rs::test_triage_approval_action`: Submits test approval and asserts promotion in DB.
 
 ### Verification Gate Command
 ```bash

@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-6-setup-guide` (Short: `e3-6`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Developer
 - **Priority:** Should
 - **Sizing:** S
@@ -37,8 +37,8 @@ Documents step-by-step setup in README and `docs/guides/mcp-setup.md`, including
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/docs/test_quickstart_doc.py::test_claude_config_json_syntax`](file:///workspace/calm-faraday/tests/docs/test_quickstart_doc.py): Validates MCP config snippet parses as valid JSON.
-- [`tests/docs/test_quickstart_doc.py::test_commands_executable`](file:///workspace/calm-faraday/tests/docs/test_quickstart_doc.py): Dry-runs CLI commands described in guide.
+- `tests/docs/test_quickstart_doc.py::test_claude_config_json_syntax`: Validates MCP config snippet parses as valid JSON.
+- `tests/docs/test_quickstart_doc.py::test_commands_executable`: Dry-runs CLI commands described in guide.
 
 ### Verification Gate Command
 ```bash

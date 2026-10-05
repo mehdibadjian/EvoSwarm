@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-5-seeding-from-similar-winners` (Short: `e2-5`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Developer
 - **Priority:** Should
 - **Sizing:** M
@@ -38,8 +38,8 @@ Uses vector embeddings of task descriptions in FalkorDB to find similar winners.
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/memory/test_seeding.rs::test_vector_similarity_lookup`](file:///workspace/calm-faraday/tests/memory/test_seeding.rs): Retrieves nearest past task by embedding cosine similarity.
-- [`tests/memory/test_seeding.rs::test_seed_candidate_gating`](file:///workspace/calm-faraday/tests/memory/test_seeding.rs): Ensures injected seeds are evaluated through standard gates.
+- `tests/memory/test_seeding.rs::test_vector_similarity_lookup`: Retrieves nearest past task by embedding cosine similarity.
+- `tests/memory/test_seeding.rs::test_seed_candidate_gating`: Ensures injected seeds are evaluated through standard gates.
 
 ### Verification Gate Command
 ```bash
