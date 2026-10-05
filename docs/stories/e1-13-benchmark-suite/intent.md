@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-13-benchmark-suite`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Team Lead
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** L
+- **Execution Tier:** `pro`
+- **Dependencies:** `e1-11-patch-and-report`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Mandatory Exit Gate (Gate 1). The benchmark consists of 30 tasks (at least 10 Py
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Continuous benchmarking on every minor commit.

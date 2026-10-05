@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-2-model-roles-in-config`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Operator
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** S
+- **Execution Tier:** `flash`
+- **Dependencies:** None
+- **Ledger Status:** `ready-for-dev` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Governed by AD-6 (Model Role Segregation). EvoSwarm allocates 75% of calls to fa
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Automated bidding on spot LLM auctions, dynamically switching cloud providers mid-generation.

@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
-"""Generates structured story markdown documents for EvoSwarm Epics 0 through 5."""
+"""Generates structured story markdown documents for EvoSwarm Epics 0 through 5.
+
+Epic 1 is intentionally excluded: its stories are maintained as three-artifact
+directories (intent.md, spec.md, plan.md) by plan_epic_1.py, which is the canonical
+source for Epic 1. Emitting flat docs/stories/e1-*.md here would create duplicate,
+divergent artifacts that sprint.py chain does not recognise.
+"""
 
 import os
 from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
 
 STORIES = [
     # ----------------------------------------------------
@@ -1358,24 +1366,31 @@ python3 scripts/sprint.py verify --cmd "cargo test --test {story['key'].replace(
 
 
 def main():
-    stories_dir = Path("/workspace/calm-faraday/docs/stories")
+    stories_dir = REPO_ROOT / "docs" / "stories"
     stories_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Generating {len(STORIES)} stories in {stories_dir}...")
-    for s in STORIES:
+    # Epic 1 stories live as three-artifact directories owned by plan_epic_1.py.
+    skipped = [s for s in STORIES if s["key"].startswith("e1-")]
+    targets = [s for s in STORIES if not s["key"].startswith("e1-")]
+
+    if skipped:
+        print(f"Skipping {len(skipped)} Epic 1 stories (canonical: docs/stories/<key>/ via plan_epic_1.py)")
+
+    print(f"Generating {len(targets)} stories in {stories_dir}...")
+    for s in targets:
         file_path = stories_dir / f"{s['key']}.md"
         content = render_story_markdown(s)
         file_path.write_text(content, encoding="utf-8")
-        
+
         # Also create short key symlink if it doesn't conflict
         short_link = stories_dir / f"{s['short_key']}.md"
         if short_link.exists() or short_link.is_symlink():
             short_link.unlink()
         short_link.symlink_to(f"{s['key']}.md")
-        
+
         print(f"  Created: {file_path.name} (symlinked as {short_link.name})")
 
-    print(f"Successfully generated all {len(STORIES)} stories!")
+    print(f"Successfully generated all {len(targets)} non-Epic-1 stories!")
 
 
 if __name__ == "__main__":

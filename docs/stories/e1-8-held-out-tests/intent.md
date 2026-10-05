@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-8-held-out-tests`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Reviewer
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** M
+- **Execution Tier:** `pro`
+- **Dependencies:** `e1-6-hard-gates`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Governed by AD-5. The user's trusted test suite is partitioned 80/20 at job star
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Generating artificial held-out tests with LLMs.

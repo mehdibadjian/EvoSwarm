@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-1-start-a-job-from-the-cli`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Developer
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** M
+- **Execution Tier:** `flash`
+- **Dependencies:** `e0-5-python-stack`, `e0-6-csharp-stack`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -19,5 +23,5 @@ Governed by AD-7 (SQLite Job Ledger) and AD-1 (Sandbox Isolation). The CLI must 
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Interactive TUI dashboards, distributed cluster orchestration, or multi-repo workspaces.

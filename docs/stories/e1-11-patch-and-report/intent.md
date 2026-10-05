@@ -2,9 +2,13 @@
 
 ## 1. Metadata
 - **Story Key:** `e1-11-patch-and-report`
-- **Epic:** [Epic 1: Evolve CLI and Fitness](file:///workspace/calm-faraday/docs/epics/epic-1-evolve-cli-and-fitness.md)
+- **Epic:** [Epic 1: Evolve CLI and Fitness](../../epics/epic-1-evolve-cli-and-fitness.md)
 - **Persona:** Developer
-- **Status:** ready-for-dev
+- **Priority:** Must
+- **Sizing:** M
+- **Execution Tier:** `flash`
+- **Dependencies:** `e1-6-hard-gates`, `e1-7-weighted-score`
+- **Ledger Status:** `backlog` (source of truth: [`sprint-status.yaml`](../../../sprint-status.yaml))
 
 ---
 
@@ -14,10 +18,10 @@
 ---
 
 ## 3. Problem Statement & Architectural Context
-Governed by AD-1 and AD-5. Creates branch `evoswarm/<job-id>` from base commit, writes `.evoswarm/patches/<job-id>.patch`, and generates markdown audit report. Base branch remains untouched.
+Governed by AD-1 and AD-5. Creates branch `evoswarm/<job-id>` from the base commit, writes `.evoswarm/patches/<job-id>.patch`, and generates a markdown audit report. The base branch remains untouched.
 
 ---
 
 ## 4. Scope Discipline & Boundary
-- **In Scope:** Core execution and contracts defined in specification.
+- **In Scope:** The contracts in [`spec.md`](spec.md) and the work order in [`plan.md`](plan.md); nothing beyond them.
 - **Out of Scope:** Auto-pushing branches to remote git hosts without user confirmation.
