@@ -1294,9 +1294,25 @@ STORIES = [
 ]
 
 
+def epic_filename(short_epic: str) -> str:
+    """Resolves a short epic key ('epic-0') to its real file name
+    ('epic-0-the-crucible.md').
+
+    Story records carry the short key, but the epic documents are named with a
+    descriptive suffix. Linking to '{short}.md' produces a dead reference, so the
+    actual file is located on disk.
+    """
+    matches = sorted((REPO_ROOT / "docs" / "epics").glob(f"{short_epic}*.md"))
+    if len(matches) != 1:
+        raise FileNotFoundError(
+            f"expected exactly one epic file for '{short_epic}', found {len(matches)}"
+        )
+    return matches[0].name
+
+
 def render_story_markdown(story: dict) -> str:
     dep_str = ", ".join([f"`{d}`" for d in story["depends_on"]]) if story["depends_on"] else "None"
-    
+
     io_rows = []
     for inp, out, err in story["io_matrix"]:
         io_rows.append(f"| `{inp}` | `{out}` | `{err}` |")
@@ -1314,14 +1330,15 @@ def render_story_markdown(story: dict) -> str:
 
     test_rows = []
     for test_fn, desc in story["test_plan"]:
-        test_rows.append(f"- [`{test_fn}`](file:///workspace/calm-faraday/{test_fn.split('::')[0]}): {desc}")
+        test_rows.append(f"- `{test_fn}`: {desc}")
     test_plan_text = "\n".join(test_rows)
 
+    epic_file = epic_filename(story["epic"])
     content = f"""# Story: {story['title']}
 
 ## Metadata
 - **Story Key:** `{story['key']}` (Short: `{story['short_key']}`)
-- **Epic:** [{story['epic_title']}](file:///workspace/calm-faraday/docs/epics/{story['epic']}.md)
+- **Epic:** [{story['epic_title']}](../epics/{epic_file})
 - **Persona:** {story['persona'].title()}
 - **Priority:** {story['priority']}
 - **Sizing:** {story['size']}

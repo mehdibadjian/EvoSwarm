@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-3-apparmor-profile-for-bwrap` (Short: `e0-3`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Operator
 - **Priority:** Must
 - **Sizing:** S
@@ -38,8 +38,8 @@ Recent Ubuntu releases (23.10+) restrict unprivileged user namespaces via AppArm
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_apparmor.py::test_profile_idempotency`](file:///workspace/calm-faraday/tests/test_apparmor.py): Runs install script twice and checks aa-status.
-- [`tests/test_apparmor.py::test_bwrap_unprivileged_execution`](file:///workspace/calm-faraday/tests/test_apparmor.py): Spawns unprivileged bwrap container under the loaded profile.
+- `tests/test_apparmor.py::test_profile_idempotency`: Runs install script twice and checks aa-status.
+- `tests/test_apparmor.py::test_bwrap_unprivileged_execution`: Spawns unprivileged bwrap container under the loaded profile.
 
 ### Verification Gate Command
 ```bash

@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-1-evolve-tool` (Short: `e3-1`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,9 +38,9 @@ Governed by AD-2. Exposes MCP tool `evolve(task, test_command, paths, budget)` o
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/mcp/test_evolve_tool.rs::test_evolve_submission_fast_return`](file:///workspace/calm-faraday/tests/mcp/test_evolve_tool.rs): Asserts job created and ticket returned in <2s.
-- [`tests/mcp/test_evolve_tool.rs::test_evolve_requires_test_command`](file:///workspace/calm-faraday/tests/mcp/test_evolve_tool.rs): Asserts validation error if test command omitted.
-- [`tests/mcp/test_evolve_tool.rs::test_evolve_path_traversal_rejection`](file:///workspace/calm-faraday/tests/mcp/test_evolve_tool.rs): Rejects path pointing to `../../etc`.
+- `tests/mcp/test_evolve_tool.rs::test_evolve_submission_fast_return`: Asserts job created and ticket returned in <2s.
+- `tests/mcp/test_evolve_tool.rs::test_evolve_requires_test_command`: Asserts validation error if test command omitted.
+- `tests/mcp/test_evolve_tool.rs::test_evolve_path_traversal_rejection`: Rejects path pointing to `../../etc`.
 
 ### Verification Gate Command
 ```bash

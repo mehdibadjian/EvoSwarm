@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-8-red-team-suite` (Short: `e0-8`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Security Reviewer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,9 +38,9 @@ Red-team test harness that deliberately attempts: TCP/DNS egress, reading `/home
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/red_team/test_network_egress.rs`](file:///workspace/calm-faraday/tests/red_team/test_network_egress.rs): Attempts raw TCP socket connect and DNS resolve; expects network unreachable.
-- [`tests/red_team/test_filesystem_traversal.rs`](file:///workspace/calm-faraday/tests/red_team/test_filesystem_traversal.rs): Attempts reading `/etc/shadow` and `/home`; expects EACCES/ENOENT.
-- [`tests/red_team/test_ptrace_denial.rs`](file:///workspace/calm-faraday/tests/red_team/test_ptrace_denial.rs): Attempts ptrace(PTRACE_ATTACH, 1); expects EPERM.
+- `tests/red_team/test_network_egress.rs`: Attempts raw TCP socket connect and DNS resolve; expects network unreachable.
+- `tests/red_team/test_filesystem_traversal.rs`: Attempts reading `/etc/shadow` and `/home`; expects EACCES/ENOENT.
+- `tests/red_team/test_ptrace_denial.rs`: Attempts ptrace(PTRACE_ATTACH, 1); expects EPERM.
 
 ### Verification Gate Command
 ```bash

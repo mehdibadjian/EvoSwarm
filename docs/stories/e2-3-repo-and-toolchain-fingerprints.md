@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-3-repo-and-toolchain-fingerprints` (Short: `e2-3`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** S
@@ -40,9 +40,9 @@ Governed by AD-4. Computes `repo_fingerprint` over touched files + lockfile. Com
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/memory/test_fingerprints.rs::test_touched_file_invalidation`](file:///workspace/calm-faraday/tests/memory/test_fingerprints.rs): Mutates touched file and checks hash diff.
-- [`tests/memory/test_fingerprints.rs::test_untouched_file_insensitivity`](file:///workspace/calm-faraday/tests/memory/test_fingerprints.rs): Mutates sibling file outside paths and asserts identical hash.
-- [`tests/memory/test_fingerprints.rs::test_toolchain_version_hash`](file:///workspace/calm-faraday/tests/memory/test_fingerprints.rs): Mocks compiler version change and asserts fingerprint diff.
+- `tests/memory/test_fingerprints.rs::test_touched_file_invalidation`: Mutates touched file and checks hash diff.
+- `tests/memory/test_fingerprints.rs::test_untouched_file_insensitivity`: Mutates sibling file outside paths and asserts identical hash.
+- `tests/memory/test_fingerprints.rs::test_toolchain_version_hash`: Mocks compiler version change and asserts fingerprint diff.
 
 ### Verification Gate Command
 ```bash

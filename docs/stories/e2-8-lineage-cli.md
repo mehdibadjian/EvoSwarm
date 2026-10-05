@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-8-lineage-cli` (Short: `e2-8`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** S
@@ -37,8 +37,8 @@ CLI command `evoswarm lineage <job> [--json]` traverses graph ancestry back to G
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/cli/test_lineage_cli.rs::test_ascii_tree_rendering`](file:///workspace/calm-faraday/tests/cli/test_lineage_cli.rs): Validates formatted output contains all ancestors.
-- [`tests/cli/test_lineage_cli.rs::test_json_lineage_export`](file:///workspace/calm-faraday/tests/cli/test_lineage_cli.rs): Validates JSON schema matches expected properties.
+- `tests/cli/test_lineage_cli.rs::test_ascii_tree_rendering`: Validates formatted output contains all ancestors.
+- `tests/cli/test_lineage_cli.rs::test_json_lineage_export`: Validates JSON schema matches expected properties.
 
 ### Verification Gate Command
 ```bash

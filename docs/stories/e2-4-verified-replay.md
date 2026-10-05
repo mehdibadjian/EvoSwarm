@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-4-verified-replay` (Short: `e2-4`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,8 +38,8 @@ Governed by AD-4. Matches triple fingerprints in FalkorDB; re-runs stored winner
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/memory/test_replay.rs::test_instant_replay_success`](file:///workspace/calm-faraday/tests/memory/test_replay.rs): Executes repeat task, asserts status 'replayed', 0 LLM calls, <5s wall time.
-- [`tests/memory/test_replay.rs::test_replay_verification_failure_fallback`](file:///workspace/calm-faraday/tests/memory/test_replay.rs): Induces test failure and asserts fallback to normal search.
+- `tests/memory/test_replay.rs::test_instant_replay_success`: Executes repeat task, asserts status 'replayed', 0 LLM calls, <5s wall time.
+- `tests/memory/test_replay.rs::test_replay_verification_failure_fallback`: Induces test failure and asserts fallback to normal search.
 
 ### Verification Gate Command
 ```bash

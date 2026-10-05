@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-3-java-stack` (Short: `e5-3`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** L
@@ -38,9 +38,9 @@ Governed by AD-1. Prepares `.m2` repository snapshot keyed by pom.xml hash. Runs
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/stacks/test_java_stack.rs::test_m2_snapshot_caching`](file:///workspace/calm-faraday/tests/stacks/test_java_stack.rs): Caches m2 snapshot by pom.xml hash.
-- [`tests/stacks/test_java_stack.rs::test_mvn_offline_execution`](file:///workspace/calm-faraday/tests/stacks/test_java_stack.rs): Runs `mvn -o test` in bwrap with JUnit test parsing.
-- [`tests/stacks/test_java_stack.rs::test_java_red_team_containment`](file:///workspace/calm-faraday/tests/stacks/test_java_stack.rs): Executes red-team suite in Java sandbox.
+- `tests/stacks/test_java_stack.rs::test_m2_snapshot_caching`: Caches m2 snapshot by pom.xml hash.
+- `tests/stacks/test_java_stack.rs::test_mvn_offline_execution`: Runs `mvn -o test` in bwrap with JUnit test parsing.
+- `tests/stacks/test_java_stack.rs::test_java_red_team_containment`: Executes red-team suite in Java sandbox.
 
 ### Verification Gate Command
 ```bash

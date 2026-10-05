@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e3-3-job-result-tool` (Short: `e3-3`)
-- **Epic:** [Claude Code Integration (MCP)](file:///workspace/calm-faraday/docs/epics/epic-3.md)
+- **Epic:** [Claude Code Integration (MCP)](../epics/epic-3-claude-code-integration-mcp.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** S
@@ -38,8 +38,8 @@ Exposes MCP tool `job_result(id)` returning git branch, patch file path, score, 
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/mcp/test_job_result.rs::test_fetch_completed_result`](file:///workspace/calm-faraday/tests/mcp/test_job_result.rs): Fetches completed job result and checks file paths.
-- [`tests/mcp/test_job_result.rs::test_local_patch_verification`](file:///workspace/calm-faraday/tests/mcp/test_job_result.rs): Applies returned patch locally and runs test command.
+- `tests/mcp/test_job_result.rs::test_fetch_completed_result`: Fetches completed job result and checks file paths.
+- `tests/mcp/test_job_result.rs::test_local_patch_verification`: Applies returned patch locally and runs test command.
 
 ### Verification Gate Command
 ```bash

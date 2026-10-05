@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-2-host-self-check` (Short: `e0-2`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Operator
 - **Priority:** Must
 - **Sizing:** S
@@ -38,9 +38,9 @@ Governed by AD-1. Unprivileged namespaces, cgroups v2, and AppArmor can be silen
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_host_check.rs::test_check_user_namespaces`](file:///workspace/calm-faraday/tests/test_host_check.rs): Validates unshare(CLONE_NEWUSER) syscall availability.
-- [`tests/test_host_check.rs::test_check_cgroup_v2_delegation`](file:///workspace/calm-faraday/tests/test_host_check.rs): Checks `/sys/fs/cgroup/user.slice` controllers for `memory` and `pids`.
-- [`tests/test_host_check.rs::test_check_linger_enabled`](file:///workspace/calm-faraday/tests/test_host_check.rs): Verifies systemd user lingering status for the runtime user.
+- `tests/test_host_check.rs::test_check_user_namespaces`: Validates unshare(CLONE_NEWUSER) syscall availability.
+- `tests/test_host_check.rs::test_check_cgroup_v2_delegation`: Checks `/sys/fs/cgroup/user.slice` controllers for `memory` and `pids`.
+- `tests/test_host_check.rs::test_check_linger_enabled`: Verifies systemd user lingering status for the runtime user.
 
 ### Verification Gate Command
 ```bash

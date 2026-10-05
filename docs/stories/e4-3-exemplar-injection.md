@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e4-3-exemplar-injection` (Short: `e4-3`)
-- **Epic:** [Optional Gateway](file:///workspace/calm-faraday/docs/epics/epic-4.md)
+- **Epic:** [Optional Gateway](../epics/epic-4-optional-gateway.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** M
@@ -38,8 +38,8 @@ Governed by AD-2. Intercepts incoming messages; queries FalkorDB for similar win
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/gateway/test_exemplar_injection.rs::test_successful_injection`](file:///workspace/calm-faraday/tests/gateway/test_exemplar_injection.rs): Verifies system prompt contains retrieved exemplar.
-- [`tests/gateway/test_exemplar_injection.rs::test_timeout_fallback`](file:///workspace/calm-faraday/tests/gateway/test_exemplar_injection.rs): Simulates 50ms memory delay; asserts unmodified prompt forwarded in <25ms.
+- `tests/gateway/test_exemplar_injection.rs::test_successful_injection`: Verifies system prompt contains retrieved exemplar.
+- `tests/gateway/test_exemplar_injection.rs::test_timeout_fallback`: Simulates 50ms memory delay; asserts unmodified prompt forwarded in <25ms.
 
 ### Verification Gate Command
 ```bash

@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-7-seccomp-filter` (Short: `e2-7`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Security Reviewer
 - **Priority:** Should
 - **Sizing:** M
@@ -38,8 +38,8 @@ Attaches a seccomp BPF filter to bwrap invocation blocking: `ptrace`, `mount`, `
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/security/test_seccomp.rs::test_blocked_syscalls_sigsys`](file:///workspace/calm-faraday/tests/security/test_seccomp.rs): Calls ptrace and keyctl and asserts EPERM/SIGSYS.
-- [`tests/security/test_seccomp.rs::test_harness_compatibility`](file:///workspace/calm-faraday/tests/security/test_seccomp.rs): Runs full pytest and dotnet suites under seccomp filter.
+- `tests/security/test_seccomp.rs::test_blocked_syscalls_sigsys`: Calls ptrace and keyctl and asserts EPERM/SIGSYS.
+- `tests/security/test_seccomp.rs::test_harness_compatibility`: Runs full pytest and dotnet suites under seccomp filter.
 
 ### Verification Gate Command
 ```bash

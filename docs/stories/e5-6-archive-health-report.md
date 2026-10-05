@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-6-archive-health-report` (Short: `e5-6`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** S
@@ -36,8 +36,8 @@ Renders an ASCII or HTML visualization of the 4x4 grid showing cell occupancy (o
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/engine/test_archive_report.rs::test_grid_heatmap_rendering`](file:///workspace/calm-faraday/tests/engine/test_archive_report.rs): Validates 4x4 ASCII grid output.
-- [`tests/engine/test_archive_report.rs::test_occupancy_ratio_calculation`](file:///workspace/calm-faraday/tests/engine/test_archive_report.rs): Calculates occupied cell count.
+- `tests/engine/test_archive_report.rs::test_grid_heatmap_rendering`: Validates 4x4 ASCII grid output.
+- `tests/engine/test_archive_report.rs::test_occupancy_ratio_calculation`: Calculates occupied cell count.
 
 ### Verification Gate Command
 ```bash

@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e4-5-latency-budget-in-ci` (Short: `e4-5`)
-- **Epic:** [Optional Gateway](file:///workspace/calm-faraday/docs/epics/epic-4.md)
+- **Epic:** [Optional Gateway](../epics/epic-4-optional-gateway.md)
 - **Persona:** Operator
 - **Priority:** Should
 - **Sizing:** M
@@ -37,7 +37,7 @@ Automated load test running 20 concurrent streams measuring added TTFT. Blocks C
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/gateway/test_latency_benchmark.rs::test_20_stream_ttft`](file:///workspace/calm-faraday/tests/gateway/test_latency_benchmark.rs): Executes 20 concurrent SSE streams and asserts p95 added TTFT < 50ms.
+- `tests/gateway/test_latency_benchmark.rs::test_20_stream_ttft`: Executes 20 concurrent SSE streams and asserts p95 added TTFT < 50ms.
 
 ### Verification Gate Command
 ```bash

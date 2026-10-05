@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-1-map-elites-grid` (Short: `e5-1`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Developer
 - **Priority:** Could
 - **Sizing:** M
@@ -38,8 +38,8 @@ Governed by AD-8. 4x4 phenotypic grid: runtime relative to baseline (4 bins) x d
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/engine/test_map_elites.rs::test_cell_binning`](file:///workspace/calm-faraday/tests/engine/test_map_elites.rs): Calculates grid coordinates from runtime and diff lines.
-- [`tests/engine/test_map_elites.rs::test_cell_replacement`](file:///workspace/calm-faraday/tests/engine/test_map_elites.rs): Replaces lower-scoring occupant with higher-scoring candidate.
+- `tests/engine/test_map_elites.rs::test_cell_binning`: Calculates grid coordinates from runtime and diff lines.
+- `tests/engine/test_map_elites.rs::test_cell_replacement`: Replaces lower-scoring occupant with higher-scoring candidate.
 
 ### Verification Gate Command
 ```bash

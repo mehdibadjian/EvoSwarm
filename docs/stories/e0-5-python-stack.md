@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e0-5-python-stack` (Short: `e0-5`)
-- **Epic:** [The Crucible (Sandbox)](file:///workspace/calm-faraday/docs/epics/epic-0.md)
+- **Epic:** [The Crucible (Sandbox)](../epics/epic-0-the-crucible.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,9 +38,9 @@ Governed by AD-1. Creates an offline read-only venv keyed by lockfile SHA-256 (`
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/test_python_stack.rs::test_venv_cache_reuse`](file:///workspace/calm-faraday/tests/test_python_stack.rs): Verifies venv is created once and reused for identical lockfile hashes.
-- [`tests/test_python_stack.rs::test_pip_install_egress_fails`](file:///workspace/calm-faraday/tests/test_python_stack.rs): Attempts `pip install requests` inside sandbox and confirms failure.
-- [`tests/test_python_stack.rs::test_junit_xml_parsing`](file:///workspace/calm-faraday/tests/test_python_stack.rs): Parses pytest junitxml output into structured test summary.
+- `tests/test_python_stack.rs::test_venv_cache_reuse`: Verifies venv is created once and reused for identical lockfile hashes.
+- `tests/test_python_stack.rs::test_pip_install_egress_fails`: Attempts `pip install requests` inside sandbox and confirms failure.
+- `tests/test_python_stack.rs::test_junit_xml_parsing`: Parses pytest junitxml output into structured test summary.
 
 ### Verification Gate Command
 ```bash

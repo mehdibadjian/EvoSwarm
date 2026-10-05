@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e4-2-usage-logging` (Short: `e4-2`)
-- **Epic:** [Optional Gateway](file:///workspace/calm-faraday/docs/epics/epic-4.md)
+- **Epic:** [Optional Gateway](../epics/epic-4-optional-gateway.md)
 - **Persona:** Operator
 - **Priority:** Should
 - **Sizing:** S
@@ -37,8 +37,8 @@ Extracts `usage` block from completion SSE event; records input, output, and cac
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/gateway/test_usage_logging.rs::test_usage_record_persistence`](file:///workspace/calm-faraday/tests/gateway/test_usage_logging.rs): Verifies tokens logged to SQLite.
-- [`tests/gateway/test_usage_logging.rs::test_evoswarm_usage_cli`](file:///workspace/calm-faraday/tests/gateway/test_usage_logging.rs): Executes `evoswarm usage` and verifies daily cost summary.
+- `tests/gateway/test_usage_logging.rs::test_usage_record_persistence`: Verifies tokens logged to SQLite.
+- `tests/gateway/test_usage_logging.rs::test_evoswarm_usage_cli`: Executes `evoswarm usage` and verifies daily cost summary.
 
 ### Verification Gate Command
 ```bash

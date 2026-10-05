@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e2-2-lineage-written-to-falkordb` (Short: `e2-2`)
-- **Epic:** [System 1 Memory and Replay](file:///workspace/calm-faraday/docs/epics/epic-2.md)
+- **Epic:** [System 1 Memory and Replay](../epics/epic-2-system-1-memory-and-replay.md)
 - **Persona:** Developer
 - **Priority:** Must
 - **Sizing:** M
@@ -38,9 +38,9 @@ Governed by AD-3. Writes Task, Implementation, Evaluation, TestCase nodes and ed
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/memory/test_falkordb_lineage.rs::test_graph_schema_conformance`](file:///workspace/calm-faraday/tests/memory/test_falkordb_lineage.rs): Validates created Cypher nodes and relationship types.
-- [`tests/memory/test_falkordb_lineage.rs::test_index_usage`](file:///workspace/calm-faraday/tests/memory/test_falkordb_lineage.rs): Checks EXPLAIN output for indexed lookups.
-- [`tests/memory/test_falkordb_lineage.rs::test_db_downtime_retry_queue`](file:///workspace/calm-faraday/tests/memory/test_falkordb_lineage.rs): Mocks DB outage and verifies spool file.
+- `tests/memory/test_falkordb_lineage.rs::test_graph_schema_conformance`: Validates created Cypher nodes and relationship types.
+- `tests/memory/test_falkordb_lineage.rs::test_index_usage`: Checks EXPLAIN output for indexed lookups.
+- `tests/memory/test_falkordb_lineage.rs::test_db_downtime_retry_queue`: Mocks DB outage and verifies spool file.
 
 ### Verification Gate Command
 ```bash

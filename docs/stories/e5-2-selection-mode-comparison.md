@@ -2,7 +2,7 @@
 
 ## Metadata
 - **Story Key:** `e5-2-selection-mode-comparison` (Short: `e5-2`)
-- **Epic:** [MAP-Elites and Multi-Stack Expansion](file:///workspace/calm-faraday/docs/epics/epic-5.md)
+- **Epic:** [MAP-Elites and Multi-Stack Expansion](../epics/epic-5-map-elites-and-more-stacks.md)
 - **Persona:** Team Lead
 - **Priority:** Could
 - **Sizing:** S
@@ -37,8 +37,8 @@ Allows setting `selection = 'topk'` or `'mapelites'` in config. Runs benchmark s
 
 ## 5. TDD Implementation Plan (Red Phase)
 Before any production code is authored, author failing test cases:
-- [`tests/benchmark/test_selection_modes.py::test_mode_dispatch`](file:///workspace/calm-faraday/tests/benchmark/test_selection_modes.py): Verifies parent selection reflects config setting.
-- [`tests/benchmark/test_selection_modes.py::test_side_by_side_reporting`](file:///workspace/calm-faraday/tests/benchmark/test_selection_modes.py): Generates comparative solve rate report.
+- `tests/benchmark/test_selection_modes.py::test_mode_dispatch`: Verifies parent selection reflects config setting.
+- `tests/benchmark/test_selection_modes.py::test_side_by_side_reporting`: Generates comparative solve rate report.
 
 ### Verification Gate Command
 ```bash
