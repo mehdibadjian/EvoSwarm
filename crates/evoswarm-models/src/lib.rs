@@ -1,4 +1,5 @@
 pub mod config;
+pub mod context_guard;
 pub mod error;
 pub mod hot_reload;
 pub mod idempotency;
