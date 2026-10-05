@@ -9,6 +9,8 @@ pub mod budget;
 pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
+pub mod feedback;
+pub mod mutation;
 pub mod recovery;
 pub mod seeding;
 pub mod selection;
@@ -21,6 +23,8 @@ pub use dispatch::{
     dispatch_model, sandbox_run, CompletionRequest, CompletionResponse, DispatchError, ModelClient,
 };
 pub use early_stop::{should_stop, StopReason};
+pub use feedback::{build as build_feedback, render_clamped, FailureFeedback, TRUNCATION_MARKER};
+pub use mutation::{mutate, MutationContext, MutationDeps, MutationError};
 pub use recovery::{recover, ResumableJob};
 pub use seeding::{
     seed_generation_zero, EmptyMemorySeeder, MemorySeeder, SeedConfig, SeedingDeps, SeedingError,

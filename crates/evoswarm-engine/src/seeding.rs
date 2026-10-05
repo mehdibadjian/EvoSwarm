@@ -20,7 +20,7 @@ use evoswarm_core::Candidate;
 use evoswarm_models::{call_hash, Role};
 use thiserror::Error;
 
-use crate::dedup::diff_hash;
+use crate::dedup::{diff_hash, hex};
 use crate::dispatch::{CompletionRequest, ModelClient};
 
 /// Replacement attempts allowed for a colliding draft before seeding gives up (spec §1.4).
@@ -170,20 +170,4 @@ async fn draw_unique_draft(
     Err(SeedingError::DedupExhausted {
         attempts: MAX_DEDUP_ATTEMPTS,
     })
-}
-
-fn hex(bytes: &[u8; 32]) -> String {
-    bytes.iter().map(|b| format!("{b:02x}")).collect()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn hex_is_lowercase_and_full_width() {
-        let s = hex(&[0u8; 32]);
-        assert_eq!(s.len(), 64);
-        assert!(s.chars().all(|c| c.is_ascii_hexdigit()));
-    }
 }

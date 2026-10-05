@@ -12,6 +12,11 @@ pub fn diff_hash(patch: &[u8]) -> [u8; 32] {
     hasher.finalize().into()
 }
 
+/// Lower-case hex of a 32-byte hash, used for the persisted `prompt_hash` string field.
+pub fn hex(bytes: &[u8; 32]) -> String {
+    bytes.iter().map(|b| format!("{b:02x}")).collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -30,5 +35,12 @@ mod tests {
     fn empty_patch_hashes_stably() {
         assert_eq!(diff_hash(b"").len(), 32);
         assert_eq!(diff_hash(b""), diff_hash(b""));
+    }
+
+    #[test]
+    fn hex_is_lowercase_and_full_width() {
+        let s = hex(&[0u8; 32]);
+        assert_eq!(s.len(), 64);
+        assert!(s.chars().all(|c| c.is_ascii_hexdigit()));
     }
 }
