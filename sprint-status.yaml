@@ -15,13 +15,13 @@ development_status:
   epic-5: backlog
 
   # Epic 0: The Crucible (Sandbox & Isolation)
-  e0-1-sandbox-runner-interface: ready-for-dev
+  e0-1-sandbox-runner-interface: done
   e0-2-host-self-check: backlog
   e0-3-apparmor-profile-for-bwrap: ready-for-dev
   e0-4-resource-limits: backlog
-  e0-5-python-stack: backlog
+  e0-5-python-stack: done
   e0-6-csharp-stack: backlog
-  e0-7-tamper-proof-tests: backlog
+  e0-7-tamper-proof-tests: done
   e0-8-red-team-suite: backlog
   e0-9-limit-calibration: backlog
 
@@ -31,8 +31,8 @@ development_status:
   e1-3-seed-the-first-generation: backlog
   e1-4-mutation-with-error-feedback: backlog
   e1-5-crossover-of-two-parents: backlog
-  e1-6-hard-gates: backlog
-  e1-7-weighted-score: backlog
+  e1-6-hard-gates: done
+  e1-7-weighted-score: done
   e1-8-held-out-tests: backlog
   e1-9-adversary-tests: backlog
   e1-10-budget-enforcement: backlog
@@ -41,9 +41,9 @@ development_status:
   e1-13-benchmark-suite: backlog
 
   # Epic 2: System 1 Memory and Replay
-  e2-1-content-addressed-blob-store: backlog
+  e2-1-content-addressed-blob-store: done
   e2-2-lineage-written-to-falkordb: backlog
-  e2-3-repo-and-toolchain-fingerprints: backlog
+  e2-3-repo-and-toolchain-fingerprints: done
   e2-4-verified-replay: backlog
   e2-5-seeding-from-similar-winners: backlog
   e2-6-approve-candidate-tests: backlog
