@@ -7,6 +7,7 @@ pub mod artifacts;
 pub mod baseline;
 pub mod exit_codes;
 pub mod git_writer;
+pub mod host_check;
 pub mod report;
 pub mod run;
 
