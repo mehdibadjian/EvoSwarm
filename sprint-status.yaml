@@ -28,13 +28,13 @@ development_status:
   # Epic 1: Evolve CLI and Fitness
   e1-1-start-a-job-from-the-cli: done
   e1-2-model-roles-in-config: done
-  e1-3-seed-the-first-generation: backlog
-  e1-4-mutation-with-error-feedback: backlog
-  e1-5-crossover-of-two-parents: backlog
+  e1-3-seed-the-first-generation: review  # SEAM: verified against stub ModelClient/MemorySeeder; live-gate half needs provider keys (roadmap §5)
+  e1-4-mutation-with-error-feedback: review  # SEAM: verified against stub ModelClient/LineageSink; live-gate half needs provider keys (roadmap §5)
+  e1-5-crossover-of-two-parents: review  # SEAM: verified against stub ModelClient/LineageSink; live-gate half needs provider keys (roadmap §5)
   e1-6-hard-gates: done
   e1-7-weighted-score: done
   e1-8-held-out-tests: done
-  e1-9-adversary-tests: backlog
+  e1-9-adversary-tests: review  # SEAM: verified against stub ModelClient/SandboxBackend; live-gate half needs provider keys + real compilation (roadmap §5)
   e1-10-budget-enforcement: done
   e1-11-patch-and-report: done
   e1-12-resume-after-crash: done
