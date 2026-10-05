@@ -6,6 +6,10 @@
 //! state change is committed atomically. e1-1 opens the ledger and records the
 //! queued ticket; e1-12 extends it with generations and the call cache.
 
+pub mod cache;
+pub mod generations;
 pub mod ledger;
 
+pub use cache::CachedCall;
+pub use generations::GenerationStatus;
 pub use ledger::{JobLedger, JobRecord, LedgerError, RepoRoot};

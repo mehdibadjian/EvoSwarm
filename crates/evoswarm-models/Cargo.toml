@@ -9,6 +9,7 @@ toml = { workspace = true }
 arc-swap = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true }
+sha2 = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }

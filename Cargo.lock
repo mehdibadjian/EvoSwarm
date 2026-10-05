@@ -246,6 +246,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "evoswarm-engine"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "evoswarm-core",
+ "evoswarm-ledger",
+ "evoswarm-models",
+ "evoswarm-sandbox",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "tokio",
+]
+
+[[package]]
 name = "evoswarm-fitness"
 version = "0.1.0"
 dependencies = [
@@ -281,6 +297,7 @@ version = "0.1.0"
 dependencies = [
  "arc-swap",
  "serde",
+ "sha2",
  "thiserror",
  "tokio",
  "toml",

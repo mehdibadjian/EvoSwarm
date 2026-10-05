@@ -80,7 +80,7 @@ fn legal_transition(from: JobStatus, to: JobStatus) -> bool {
 /// The SQLite-backed job ledger. One connection per ledger; WAL + synchronous=FULL make a
 /// committed transition durable across a crash, which is the entire point of AD-7.
 pub struct JobLedger {
-    conn: Connection,
+    pub(crate) conn: Connection,
 }
 
 impl JobLedger {
@@ -117,6 +117,22 @@ impl JobLedger {
                 base_commit  TEXT,
                 split_json   TEXT,
                 created_at   INTEGER NOT NULL DEFAULT (strftime('%s','now'))
+            );
+            CREATE TABLE IF NOT EXISTS job_generations (
+                job_id         TEXT NOT NULL,
+                generation     INTEGER NOT NULL,
+                population_json TEXT NOT NULL,
+                status         TEXT NOT NULL,
+                created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY(job_id, generation)
+            );
+            CREATE TABLE IF NOT EXISTS model_call_cache (
+                idempotency_hash TEXT PRIMARY KEY,
+                model_id         TEXT NOT NULL,
+                response_text    TEXT NOT NULL,
+                tokens_in        INTEGER NOT NULL,
+                tokens_out       INTEGER NOT NULL,
+                created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );",
         )?;
         Ok(())

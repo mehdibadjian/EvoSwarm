@@ -1,0 +1,19 @@
+[package]
+name = "evoswarm-engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+evoswarm-core = { workspace = true }
+evoswarm-ledger = { workspace = true }
+evoswarm-models = { workspace = true }
+evoswarm-sandbox = { workspace = true }
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }
