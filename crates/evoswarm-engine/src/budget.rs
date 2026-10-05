@@ -5,8 +5,8 @@
 //!
 //! `CallRequest` (the projected spend of a call, tagged with its `Role`) lives here rather
 //! than in `evoswarm-core`: `Role` is owned by `evoswarm-models`, and core must stay the
-//! dependency leaf. The plan's optional `crossover_calls` counter is intentionally omitted —
-//! no e1-10 acceptance criterion depends on it, and e1-5 owns the crossover cap.
+//! dependency leaf. The `CrossoverBudget` below enforces the separate e1-5 crossover-vs-total
+//! call cap, which is a call-count ratio rather than a token/dollar projection.
 
 use evoswarm_core::Usage;
 use evoswarm_models::Role;
@@ -153,6 +153,60 @@ impl BudgetGuard {
 
     pub fn tokens_used(&self) -> u64 {
         self.tokens_used
+    }
+}
+
+/// Crossover calls are capped at this fraction of total model calls (e1-5 §2, AD-6): the
+/// synthesiser is the most expensive role and recombining cannot dominate the search.
+pub const CROSSOVER_CAP_RATIO: f64 = 0.25;
+
+/// Tracks the crossover-vs-total call ratio so a generation can enforce the 25% cap *before*
+/// dispatching a synthesiser call. An over-cap call has already spent the tokens the cap exists
+/// to save, so the check is pre-dispatch and the caller degrades to a mutation when it fails.
+#[derive(Debug, Clone, Default)]
+pub struct CrossoverBudget {
+    crossover_calls: u64,
+    total_calls: u64,
+}
+
+impl CrossoverBudget {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Checks whether another crossover would keep the ratio at or below the cap *after* the
+    /// call is counted. `Err` means the caller must fall back to mutation this round.
+    pub fn pre_dispatch_crossover(&self) -> Result<(), BudgetExhausted> {
+        let prospective_cross = self.crossover_calls + 1;
+        let prospective_total = self.total_calls + 1;
+        let ratio = prospective_cross as f64 / prospective_total as f64;
+        if ratio > CROSSOVER_CAP_RATIO + 1e-9 {
+            return Err(BudgetExhausted {
+                kind: ExhaustedKind::Token,
+                message: format!(
+                    "crossover would reach {prospective_cross}/{prospective_total} = {ratio:.3}, \
+                     above the {CROSSOVER_CAP_RATIO} cap"
+                ),
+            });
+        }
+        Ok(())
+    }
+
+    /// Records one dispatched call. A synthesiser call counts as a crossover; every role counts
+    /// toward the total.
+    pub fn record_call(&mut self, role: Role) {
+        self.total_calls += 1;
+        if role == Role::Synthesiser {
+            self.crossover_calls += 1;
+        }
+    }
+
+    pub fn crossover_calls(&self) -> u64 {
+        self.crossover_calls
+    }
+
+    pub fn total_calls(&self) -> u64 {
+        self.total_calls
     }
 }
 

@@ -5,20 +5,40 @@
 //! (e1-8); the generation operators (e1-3/4/5/9) arrive in Wave 3 behind the `ModelClient`
 //! seam.
 
+pub mod adversary;
 pub mod budget;
+pub mod crossover;
+pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
+pub mod feedback;
+pub mod mutation;
 pub mod recovery;
+pub mod seeding;
 pub mod selection;
 
-pub use budget::{
-    BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, ExhaustedKind, RoleRates,
+pub use adversary::{
+    compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
+    SuspectEvidence,
 };
+pub use budget::{
+    BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, CrossoverBudget, ExhaustedKind,
+    RoleRates, CROSSOVER_CAP_RATIO,
+};
+pub use crossover::{
+    crossover, rank_pairs, CrossoverContext, CrossoverDeps, CrossoverError, MeasuredCandidate,
+};
+pub use dedup::diff_hash;
 pub use dispatch::{
     dispatch_model, sandbox_run, CompletionRequest, CompletionResponse, DispatchError, ModelClient,
 };
 pub use early_stop::{should_stop, StopReason};
+pub use feedback::{build as build_feedback, render_clamped, FailureFeedback, TRUNCATION_MARKER};
+pub use mutation::{mutate, MutationContext, MutationDeps, MutationError};
 pub use recovery::{recover, ResumableJob};
+pub use seeding::{
+    seed_generation_zero, EmptyMemorySeeder, MemorySeeder, SeedConfig, SeedingDeps, SeedingError,
+};
 pub use selection::{
     select_verified_winner, HeldOutEvaluator, ScoredCandidate, SelectionDeps, SelectionError,
 };
