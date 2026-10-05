@@ -53,6 +53,16 @@ async fn test_certifiable_escapes_all_denied() {
         denials.contains(&"host-pid1"),
         "host PID 1 unreachable (PID-ns isolation)"
     );
+    // e2-7: the raw-syscall probes are now certifiable seccomp denials (previously the
+    // `ptrace-host` gap was deferred). They run in the same suite, so assert a couple here.
+    assert!(
+        denials.contains(&"seccomp-ptrace"),
+        "ptrace(101) denied by seccomp filter"
+    );
+    assert!(
+        denials.contains(&"seccomp-unshare"),
+        "unshare(272) denied by seccomp filter"
+    );
 }
 
 /// AC1 (honesty half): probes this environment cannot certify are Deferred with a non-empty
@@ -68,16 +78,18 @@ async fn test_deferred_probes_flagged_with_reasons() {
         "shadow-read is deferred, not falsely denied"
     );
     assert!(
-        deferred.contains(&"ptrace-host"),
-        "ptrace-host deferred (needs e2-7 seccomp)"
-    );
-    assert!(
         deferred.contains(&"cgroup-memory-cap"),
         "cgroup cap deferred (needs e0-4)"
     );
+    // e2-7 resolved the former `ptrace-host` deferral: ptrace is now a certifiable
+    // seccomp denial, so it must NOT appear among the deferred gaps anymore.
+    assert!(
+        !deferred.contains(&"ptrace-host"),
+        "ptrace-host deferral is resolved by e2-7 seccomp; it is now certifiable"
+    );
 
     // Each deferred probe carries an explanatory reason.
-    for name in ["shadow-read", "ptrace-host", "cgroup-memory-cap"] {
+    for name in ["shadow-read", "cgroup-memory-cap"] {
         let reason = deferred_probes()
             .iter()
             .find(|p| p.name == name)

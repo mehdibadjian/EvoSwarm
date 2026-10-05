@@ -22,6 +22,11 @@ pub struct BwrapBackend {
     /// Host path to a dependency cache (e.g. a prebuilt venv) bind-mounted
     /// read-only at `/deps`. When `None`, no deps mount is set up.
     pub deps_dir: Option<PathBuf>,
+    /// Whether to attach the e2-7 seccomp filter (`--seccomp 0`, fed on stdin).
+    /// Default `true`: candidate code never needs the blocked syscalls, so the
+    /// kernel attack surface is minimized unless a caller opts out (e.g. the
+    /// anti-cheat half of the e2-7 test, which proves probes are real).
+    pub seccomp: bool,
 }
 
 impl BwrapBackend {
@@ -29,6 +34,7 @@ impl BwrapBackend {
         Self {
             tests_dir: None,
             deps_dir: None,
+            seccomp: true,
         }
     }
 
@@ -39,6 +45,12 @@ impl BwrapBackend {
 
     pub fn with_deps_dir(mut self, p: PathBuf) -> Self {
         self.deps_dir = Some(p);
+        self
+    }
+
+    /// Enable or disable the seccomp filter (e2-7). Enabled by default.
+    pub fn with_seccomp(mut self, on: bool) -> Self {
+        self.seccomp = on;
         self
     }
 
@@ -76,13 +88,7 @@ impl BwrapBackend {
         command: &str,
         timeout_secs: u64,
     ) -> Result<ExecutionResult, SandboxError> {
-        let argv = self.build_bwrap_argv(workdir, command);
-        let mut child = Command::new(&argv[0])
-            .args(&argv[1..])
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .map_err(|e| SandboxError::Execution(format!("spawn bwrap: {e}")))?;
+        let mut child = self.spawn_bwrap(workdir, command).await?;
 
         // Extract handles BEFORE async blocks to avoid borrow checker issues
         let stdout_handle = child.stdout.take();
@@ -153,8 +159,14 @@ impl BwrapBackend {
     /// Build the bwrap argv for a given workdir. Exposed so tests can assert
     /// on the shape of the invocation without actually running it.
     pub fn build_bwrap_argv(&self, workdir: &Path, command: &str) -> Vec<String> {
-        let mut argv: Vec<String> = vec![
-            "bwrap".into(),
+        let mut argv: Vec<String> = vec!["bwrap".into()];
+        // e2-7: attach the seccomp filter read from stdin (fd 0). The filter bytes
+        // are written to the child's stdin in `run`/`run_with_timeout`.
+        if self.seccomp {
+            argv.push("--seccomp".into());
+            argv.push("0".into());
+        }
+        argv.extend([
             "--unshare-all".into(),
             "--unshare-net".into(), // Explicitly disable network access
             // Minimal read-only root so `/bin/sh`, `/usr/lib`, etc. resolve.
@@ -190,7 +202,7 @@ impl BwrapBackend {
             "--bind".into(),
             workdir.to_string_lossy().into_owned(),
             "/work".into(),
-        ];
+        ]);
         if let Some(td) = &self.tests_dir {
             argv.extend([
                 "--ro-bind".into(),
@@ -214,6 +226,42 @@ impl BwrapBackend {
             command.into(),
         ]);
         argv
+    }
+
+    /// Spawn bwrap for `command` in `workdir`, wiring the e2-7 seccomp program onto
+    /// fd 0 when enabled (`--seccomp 0`). bwrap reads the filter at startup — before
+    /// it execs the payload — and the program is tiny (well under the pipe buffer), so
+    /// feeding it here cannot deadlock against the child's own output.
+    async fn spawn_bwrap(
+        &self,
+        workdir: &Path,
+        command: &str,
+    ) -> Result<tokio::process::Child, SandboxError> {
+        use tokio::io::AsyncWriteExt;
+
+        let argv = self.build_bwrap_argv(workdir, command);
+        let stdin_mode = if self.seccomp {
+            std::process::Stdio::piped()
+        } else {
+            std::process::Stdio::null()
+        };
+        let mut child = Command::new(&argv[0])
+            .args(&argv[1..])
+            .stdin(stdin_mode)
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::piped())
+            .spawn()
+            .map_err(|e| SandboxError::Execution(format!("spawn bwrap: {e}")))?;
+
+        if self.seccomp {
+            // Write the filter, then drop stdin so bwrap sees EOF after the program.
+            // A write error (e.g. the child already exited) is non-fatal: the caller's
+            // status capture reports what happened.
+            if let Some(mut stdin) = child.stdin.take() {
+                let _ = stdin.write_all(&crate::seccomp::build_filter()).await;
+            }
+        }
+        Ok(child)
     }
 }
 
@@ -264,13 +312,7 @@ impl SandboxBackend for BwrapBackend {
         workdir: &Path,
         test_command: &str,
     ) -> Result<ExecutionResult, SandboxError> {
-        let argv = self.build_bwrap_argv(workdir, test_command);
-        let mut child = Command::new(&argv[0])
-            .args(&argv[1..])
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::piped())
-            .spawn()
-            .map_err(|e| SandboxError::Execution(format!("spawn bwrap: {e}")))?;
+        let mut child = self.spawn_bwrap(workdir, test_command).await?;
 
         // Extract handles BEFORE async blocks to avoid borrow checker issues
         let stdout_handle = child.stdout.take();

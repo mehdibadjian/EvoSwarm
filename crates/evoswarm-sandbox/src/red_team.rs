@@ -12,14 +12,18 @@
 //!
 //! - [`ProbeClass::Certifiable`] — denial is genuinely enforceable by bwrap in *this*
 //!   environment and is asserted: TCP egress, DNS resolution, writing outside `/work`, `/home`
-//!   traversal, and host-PID-1 reachability (PID-namespace isolation).
+//!   traversal, host-PID-1 reachability (PID-namespace isolation), and — since e2-7 — the raw
+//!   syscalls ptrace/mount/umount2/keyctl/bpf/perf_event_open/unshare, killed by the seccomp
+//!   filter.
 //! - [`ProbeClass::Deferred`] — the escape cannot be certified here because a required control
 //!   is absent; the probe is recorded as [`ProbeOutcome::NotRun`] with a reason and is **never**
 //!   counted as a denial, so a partial environment can never fake full containment:
 //!   - `shadow-read`: the CI sandbox runs as uid 0 with the host `/etc` ro-bind mounted, so
 //!     `/etc/shadow` is readable here; real denial needs a non-root uid-mapped sandbox.
-//!   - `ptrace-host`: needs the seccomp filter from e2-7.
 //!   - `cgroup-memory-cap`: needs writable cgroup v2 delegation from e0-4.
+//!
+//! Note: the pre-e2-7 `ptrace-host` deferral is now resolved — ptrace is a certifiable
+//! seccomp denial, not a gap.
 //!
 //! [`run_all`] executes the full suite; [`run_quick`] executes a fast certifiable subset that
 //! e0-2 folds into the host self-check.
@@ -160,6 +164,62 @@ fn suite() -> Vec<Probe> {
             deferred_reason: "",
             quick: true,
         },
+        // --- e2-7 seccomp syscall probes ---------------------------------------------
+        // Each invokes the RAW syscall (via python3 ctypes, NULL args) that the e2-7 filter
+        // kills, and prints the sentinel only if the syscall *returns*. Under the filter the
+        // process is SIGSYS-killed before the print, so silence = denied. Using the raw
+        // syscall (not a util-linux binary) matters: e.g. `unshare -U` calls clone(2), which
+        // the unshare(272) rule would not catch. x86-64 numbers per
+        // /usr/include/x86_64-linux-gnu/asm/unistd_64.h.
+        Probe {
+            name: "seccomp-ptrace",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(101),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-mount",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(165),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-umount2",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(166),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-keyctl",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(250),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-bpf",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(321),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-perf-event-open",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(298),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
+        Probe {
+            name: "seccomp-unshare",
+            command: r#"python3 -c "import ctypes;l=ctypes.CDLL(None);l.syscall.restype=ctypes.c_long;l.syscall(ctypes.c_long(272),ctypes.c_long(0),ctypes.c_long(0),ctypes.c_long(0));print('EVOSWARM_ESCAPED')""#,
+            class: ProbeClass::Certifiable,
+            deferred_reason: "",
+            quick: false,
+        },
         Probe {
             name: "shadow-read",
             // Reading /etc/shadow: enforceable only under a non-root uid-mapped sandbox.
@@ -167,14 +227,6 @@ fn suite() -> Vec<Probe> {
             class: ProbeClass::Deferred,
             deferred_reason: "CI sandbox runs as uid 0 with host /etc ro-bind mounted, so shadow \
                 is readable here; denial needs a non-root uid-mapped sandbox or sanitized /etc bind",
-            quick: false,
-        },
-        Probe {
-            name: "ptrace-host",
-            // ptrace(PTRACE_ATTACH, host_pid): blocked by seccomp (e2-7), not present here.
-            command: "true", // no ptrace tooling in this env; classification carries the truth
-            class: ProbeClass::Deferred,
-            deferred_reason: "needs the seccomp BPF filter from e2-7 and ptrace tooling; not run here",
             quick: false,
         },
         Probe {
