@@ -1,0 +1,12 @@
+# Sprint Status Ledger (EvoSwarm)
+# Tracks epic and story progression across the development lifecycle.
+
+project: EvoSwarm
+tracking_system: file-system
+story_location: docs/stories
+
+development_status: {}
+
+execution_tiers: {}
+
+action_items: []
