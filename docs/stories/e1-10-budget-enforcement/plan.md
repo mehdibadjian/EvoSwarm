@@ -9,7 +9,7 @@ Complete these before writing code; tick each only when it actually holds.
 - [ ] Reviewed [`ARCHITECTURE-SPINE.md`](../../architecture/ARCHITECTURE-SPINE.md) and confirmed this story upholds its invariants: Governed by AD-6.
 - [ ] Confirmed compliance with [`architecture-rules.md`](../../../.agents/rules/architecture-rules.md), [`tdd-discipline.md`](../../../.agents/rules/tdd-discipline.md) and [`security-hygiene.md`](../../../.agents/rules/security-hygiene.md).
 - [ ] Confirmed every dependency listed above is `done`; otherwise stop and report the blocker.
-- [ ] Confirmed scope matches [`spec.md`](spec.md) section 2 and nothing outside it is being built.
+- [ ] Confirmed scope matches the contract matrix and acceptance criteria in [`spec.md`](spec.md) and nothing outside them is being built.
 - [ ] Committed to zero AI comments in production code: comments explain **WHY**, never **WHAT**.
 
 ---

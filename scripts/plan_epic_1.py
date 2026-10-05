@@ -1161,7 +1161,7 @@ Complete these before writing code; tick each only when it actually holds.
 - [ ] Reviewed [`ARCHITECTURE-SPINE.md`]({spine_link}) and confirmed this story upholds its invariants: {story['context'].split('.')[0]}.
 - [ ] Confirmed compliance with [`architecture-rules.md`]({arch_link}), [`tdd-discipline.md`]({tdd_link}) and [`security-hygiene.md`]({sec_link}).
 - [ ] Confirmed every dependency listed above is `done`; otherwise stop and report the blocker.
-- [ ] Confirmed scope matches [`spec.md`](spec.md) section 2 and nothing outside it is being built.
+- [ ] Confirmed scope matches the contract matrix and acceptance criteria in [`spec.md`](spec.md) and nothing outside them is being built.
 - [ ] Committed to zero AI comments in production code: comments explain **WHY**, never **WHAT**.
 
 ---
