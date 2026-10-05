@@ -5,8 +5,132 @@ project: EvoSwarm
 tracking_system: file-system
 story_location: docs/stories
 
-development_status: {}
+development_status:
+  # Epics
+  epic-0: in-progress
+  epic-1: backlog
+  epic-2: backlog
+  epic-3: backlog
+  epic-4: backlog
+  epic-5: backlog
 
-execution_tiers: {}
+  # Epic 0: The Crucible (Sandbox & Isolation)
+  e0-1-sandbox-runner-interface: ready-for-dev
+  e0-2-host-self-check: backlog
+  e0-3-apparmor-profile-for-bwrap: ready-for-dev
+  e0-4-resource-limits: backlog
+  e0-5-python-stack: backlog
+  e0-6-csharp-stack: backlog
+  e0-7-tamper-proof-tests: backlog
+  e0-8-red-team-suite: backlog
+  e0-9-limit-calibration: backlog
+
+  # Epic 1: Evolve CLI and Fitness
+  e1-1-start-a-job-from-the-cli: backlog
+  e1-2-model-roles-in-config: backlog
+  e1-3-seed-the-first-generation: backlog
+  e1-4-mutation-with-error-feedback: backlog
+  e1-5-crossover-of-two-parents: backlog
+  e1-6-hard-gates: backlog
+  e1-7-weighted-score: backlog
+  e1-8-held-out-tests: backlog
+  e1-9-adversary-tests: backlog
+  e1-10-budget-enforcement: backlog
+  e1-11-patch-and-report: backlog
+  e1-12-resume-after-crash: backlog
+  e1-13-benchmark-suite: backlog
+
+  # Epic 2: System 1 Memory and Replay
+  e2-1-content-addressed-blob-store: backlog
+  e2-2-lineage-written-to-falkordb: backlog
+  e2-3-repo-and-toolchain-fingerprints: backlog
+  e2-4-verified-replay: backlog
+  e2-5-seeding-from-similar-winners: backlog
+  e2-6-approve-candidate-tests: backlog
+  e2-7-seccomp-filter: backlog
+  e2-8-lineage-cli: backlog
+
+  # Epic 3: Claude Code Integration (MCP)
+  e3-1-evolve-tool: backlog
+  e3-2-job-status-tool: backlog
+  e3-3-job-result-tool: backlog
+  e3-4-cancel-job-tool: backlog
+  e3-5-context-guard: backlog
+  e3-6-setup-guide: backlog
+
+  # Epic 4: Optional Streaming Gateway
+  e4-1-transparent-pass-through: backlog
+  e4-2-usage-logging: backlog
+  e4-3-exemplar-injection: backlog
+  e4-4-injection-opt-out: backlog
+  e4-5-latency-budget-in-ci: backlog
+
+  # Epic 5: MAP-Elites and Multi-Stack Expansion
+  e5-1-map-elites-grid: backlog
+  e5-2-selection-mode-comparison: backlog
+  e5-3-java-stack: backlog
+  e5-4-c-and-cpp-stack: backlog
+  e5-5-test-triage-page: backlog
+  e5-6-archive-health-report: backlog
+
+execution_tiers:
+  # Epic 0 Tiers
+  e0-1-sandbox-runner-interface: flash
+  e0-2-host-self-check: flash
+  e0-3-apparmor-profile-for-bwrap: flash
+  e0-4-resource-limits: pro
+  e0-5-python-stack: flash
+  e0-6-csharp-stack: pro
+  e0-7-tamper-proof-tests: pro
+  e0-8-red-team-suite: pro
+  e0-9-limit-calibration: flash
+
+  # Epic 1 Tiers
+  e1-1-start-a-job-from-the-cli: flash
+  e1-2-model-roles-in-config: flash
+  e1-3-seed-the-first-generation: flash
+  e1-4-mutation-with-error-feedback: pro
+  e1-5-crossover-of-two-parents: pro
+  e1-6-hard-gates: pro
+  e1-7-weighted-score: flash
+  e1-8-held-out-tests: pro
+  e1-9-adversary-tests: pro
+  e1-10-budget-enforcement: flash
+  e1-11-patch-and-report: flash
+  e1-12-resume-after-crash: pro
+  e1-13-benchmark-suite: pro
+
+  # Epic 2 Tiers
+  e2-1-content-addressed-blob-store: flash
+  e2-2-lineage-written-to-falkordb: pro
+  e2-3-repo-and-toolchain-fingerprints: flash
+  e2-4-verified-replay: pro
+  e2-5-seeding-from-similar-winners: pro
+  e2-6-approve-candidate-tests: flash
+  e2-7-seccomp-filter: pro
+  e2-8-lineage-cli: flash
+
+  # Epic 3 Tiers
+  e3-1-evolve-tool: flash
+  e3-2-job-status-tool: flash
+  e3-3-job-result-tool: flash
+  e3-4-cancel-job-tool: flash
+  e3-5-context-guard: pro
+  e3-6-setup-guide: flash
+
+  # Epic 4 Tiers
+  e4-1-transparent-pass-through: pro
+  e4-2-usage-logging: flash
+  e4-3-exemplar-injection: pro
+  e4-4-injection-opt-out: flash
+  e4-5-latency-budget-in-ci: flash
+
+  # Epic 5 Tiers
+  e5-1-map-elites-grid: pro
+  e5-2-selection-mode-comparison: flash
+  e5-3-java-stack: pro
+  e5-4-c-and-cpp-stack: pro
+  e5-5-test-triage-page: flash
+  e5-6-archive-health-report: flash
 
 action_items: []
