@@ -6,19 +6,25 @@
 //! seam.
 
 pub mod budget;
+pub mod dedup;
 pub mod dispatch;
 pub mod early_stop;
 pub mod recovery;
+pub mod seeding;
 pub mod selection;
 
 pub use budget::{
     BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, ExhaustedKind, RoleRates,
 };
+pub use dedup::diff_hash;
 pub use dispatch::{
     dispatch_model, sandbox_run, CompletionRequest, CompletionResponse, DispatchError, ModelClient,
 };
 pub use early_stop::{should_stop, StopReason};
 pub use recovery::{recover, ResumableJob};
+pub use seeding::{
+    seed_generation_zero, EmptyMemorySeeder, MemorySeeder, SeedConfig, SeedingDeps, SeedingError,
+};
 pub use selection::{
     select_verified_winner, HeldOutEvaluator, ScoredCandidate, SelectionDeps, SelectionError,
 };
