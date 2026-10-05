@@ -9,6 +9,7 @@ pub mod budget;
 pub mod dispatch;
 pub mod early_stop;
 pub mod recovery;
+pub mod selection;
 
 pub use budget::{
     BudgetCaps, BudgetExhausted, BudgetGuard, CallRequest, ExhaustedKind, RoleRates,
@@ -18,3 +19,6 @@ pub use dispatch::{
 };
 pub use early_stop::{should_stop, StopReason};
 pub use recovery::{recover, ResumableJob};
+pub use selection::{
+    select_verified_winner, HeldOutEvaluator, ScoredCandidate, SelectionDeps, SelectionError,
+};
