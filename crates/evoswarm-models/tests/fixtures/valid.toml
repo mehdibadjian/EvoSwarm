@@ -1,0 +1,23 @@
+[models.roles.mutator]
+provider = "anthropic"
+model_id = "claude-3-5-haiku-20241022"
+max_tokens = 4096
+temperature = 0.4
+cost_per_million_input = 0.80
+cost_per_million_output = 4.00
+
+[models.roles.synthesiser]
+provider = "anthropic"
+model_id = "claude-3-5-sonnet-20241022"
+max_tokens = 8192
+temperature = 0.2
+cost_per_million_input = 3.00
+cost_per_million_output = 15.00
+
+[models.roles.adversary]
+provider = "anthropic"
+model_id = "claude-3-5-sonnet-20241022"
+max_tokens = 4096
+temperature = 0.7
+cost_per_million_input = 3.00
+cost_per_million_output = 15.00

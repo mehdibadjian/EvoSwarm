@@ -15,3 +15,6 @@ scratchpad/
 .DS_Store
 .DS_Store?
 ._*
+
+# Rust build artifacts
+/target/
