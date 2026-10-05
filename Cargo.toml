@@ -22,4 +22,5 @@ evoswarm-models = { path = "crates/evoswarm-models" }
 evoswarm-fitness = { path = "crates/evoswarm-fitness" }
 evoswarm-memory = { path = "crates/evoswarm-memory" }
 evoswarm-ledger = { path = "crates/evoswarm-ledger" }
+evoswarm-gateway = { path = "crates/evoswarm-gateway" }
 evoswarm-engine = { path = "crates/evoswarm-engine" }

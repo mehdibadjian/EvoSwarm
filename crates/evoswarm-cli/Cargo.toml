@@ -10,6 +10,7 @@ path = "src/main.rs"
 [dependencies]
 evoswarm-core = { workspace = true }
 evoswarm-ledger = { workspace = true }
+evoswarm-gateway = { workspace = true }
 evoswarm-sandbox = { workspace = true }
 clap = { workspace = true }
 serde = { workspace = true }

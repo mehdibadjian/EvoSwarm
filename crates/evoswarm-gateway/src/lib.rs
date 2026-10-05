@@ -7,6 +7,8 @@
 
 pub mod config;
 pub mod proxy;
+pub mod usage;
 
 pub use config::{ConfigError, GatewayConfig};
 pub use proxy::{ProxyError, ProxyState};
+pub use usage::{UsageError, UsagePricing, UsageRecord, UsageStore};

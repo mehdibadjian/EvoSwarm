@@ -9,7 +9,8 @@
 //! drops its side, axum drops that stream, which drops the reqwest response and tears down the
 //! upstream connection — so a client abort propagates without any explicit timer.
 
-use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
 
 use axum::body::Body;
 use axum::extract::{Request, State};
@@ -17,7 +18,8 @@ use axum::http::{header, HeaderMap, Method, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::any;
 use axum::Router;
-use futures::TryStreamExt;
+use futures::future::Either;
+use futures::{StreamExt, TryStreamExt};
 use thiserror::Error;
 
 use crate::config::GatewayConfig;
@@ -41,16 +43,28 @@ impl IntoResponse for ProxyError {
     }
 }
 
-/// Shared proxy state: the validated config plus one pooled reqwest client.
+/// Shared proxy state: the validated config plus one pooled reqwest client, and — when
+/// e4-2 usage logging is enabled — the SQLite usage store the stream tee writes to.
 pub struct ProxyState {
     pub config: GatewayConfig,
     client: reqwest::Client,
+    usage_store: Option<Arc<crate::usage::UsageStore>>,
 }
 
 impl ProxyState {
     /// Builds the proxy state. The reqwest client is constructed with streaming enabled and no
     /// automatic compression/gzip so the body bytes we forward are exactly what upstream sent.
     pub fn new(config: GatewayConfig) -> Result<Self, ProxyError> {
+        Self::new_with_usage(config, None)
+    }
+
+    /// Builds the proxy state with an optional e4-2 usage store. When present, every
+    /// forwarded response body is tee'd: bytes pass through untouched, and on clean stream
+    /// end the recorded bytes are scanned for a usage block and logged.
+    pub fn new_with_usage(
+        config: GatewayConfig,
+        usage_store: Option<Arc<crate::usage::UsageStore>>,
+    ) -> Result<Self, ProxyError> {
         // `default-features = false` on reqwest means no automatic gzip/brotli/deflate
         // decoding, so the bytes we forward are exactly what upstream sent. `no_proxy` keeps
         // the gateway from being surprised by ambient HTTP(S)_PROXY env vars. A shared client
@@ -59,7 +73,11 @@ impl ProxyState {
             .no_proxy()
             .build()
             .map_err(ProxyError::Upstream)?;
-        Ok(Self { config, client })
+        Ok(Self {
+            config,
+            client,
+            usage_store,
+        })
     }
 }
 
@@ -76,6 +94,15 @@ async fn forward(
     req: Request,
 ) -> Result<Response, ProxyError> {
     let (parts, body) = req.into_parts();
+
+    // e4-2: the client session, taken from `x-evoswarm-session` when the client sends one,
+    // else a generated id so every completed stream still gets an attributable usage row.
+    let session_id = parts
+        .headers
+        .get("x-evoswarm-session")
+        .and_then(|v| v.to_str().ok())
+        .map(str::to_string)
+        .unwrap_or_else(|| uuid::Uuid::new_v4().to_string());
 
     // Build the upstream URL from the configured base + the original path and query.
     let path_and_query = parts
@@ -109,12 +136,111 @@ async fn forward(
         *headers = strip_hop_by_hop(upstream_resp.headers().clone());
     }
     let byte_stream = upstream_resp.bytes_stream().map_err(std::io::Error::other);
+
+    // e4-2: tee the stream for usage accounting when a store is configured. Bytes pass
+    // through untouched; see `tee_usage` for the completion/abort semantics.
+    let byte_stream: Either<_, _> = match &state.usage_store {
+        Some(store) => Either::Left(tee_usage(byte_stream, store.clone(), session_id)),
+        None => Either::Right(byte_stream),
+    };
+
     let body = Body::from_stream(byte_stream);
     Ok(builder.body(body).unwrap_or_else(|_| {
         // A response-builder failure is only possible on an invalid header name from upstream;
         // fall back to an empty 502 rather than panicking the gateway.
         (StatusCode::BAD_GATEWAY, "gateway could not build response").into_response()
     }))
+}
+
+/// Safety cap on the per-stream recorded copy (16 MiB — far above any usage-bearing SSE
+/// body, small enough that 20 concurrent streams cannot exhaust memory). Past the cap the
+/// stream stops being recorded and nothing is logged for it.
+const RECORDER_CAP_BYTES: usize = 16 * 1024 * 1024;
+
+/// Wraps a forwarded byte stream so its bytes are also accumulated (up to
+/// [`RECORDER_CAP_BYTES`]) for e4-2 usage extraction. Logging happens exactly once, on
+/// clean end-of-stream: a sentinel item appended after the upstream's last byte triggers
+/// parse + persist. A client abort drops the stream before the sentinel, and an upstream
+/// error suppresses it, so neither logs a partial body. The forwarded bytes are never
+/// modified — the recorder only observes them.
+fn tee_usage<S>(
+    stream: S,
+    store: Arc<crate::usage::UsageStore>,
+    session_id: String,
+) -> impl futures::Stream<Item = Result<bytes::Bytes, std::io::Error>>
+where
+    S: futures::Stream<Item = Result<bytes::Bytes, std::io::Error>>,
+{
+    let recorder = Arc::new(UsageRecorder::new(store, session_id));
+    stream
+        .inspect({
+            let recorder = recorder.clone();
+            move |item| match item {
+                Ok(bytes) => recorder.observe(bytes),
+                // Stream error: mark the recorder so the trailing sentinel does not log a
+                // partial body. The error still passes through to the client untouched.
+                Err(_) => recorder.suppress(),
+            }
+        })
+        // The sentinel: emitted only when the upstream stream completed cleanly. It
+        // finalizes (parse + persist), then yields an empty chunk — zero bytes on the wire.
+        .chain(futures::stream::once(async move {
+            recorder.finalize();
+            Ok(bytes::Bytes::new())
+        }))
+}
+
+/// Accumulates a copy of a forwarded SSE body and logs its usage exactly once on clean
+/// completion (e4-2). Only token counts leave the recorder; the recorded bytes are dropped
+/// after parsing and are never persisted.
+struct UsageRecorder {
+    store: Arc<crate::usage::UsageStore>,
+    session_id: String,
+    buf: Mutex<Vec<u8>>,
+    /// True once the sentinel finalized (or suppressed) this recorder.
+    finalized: AtomicBool,
+    /// True when recording was abandoned (cap exceeded): suppresses logging.
+    suppressed: AtomicBool,
+}
+
+impl UsageRecorder {
+    fn new(store: Arc<crate::usage::UsageStore>, session_id: String) -> Self {
+        Self {
+            store,
+            session_id,
+            buf: Mutex::new(Vec::new()),
+            finalized: AtomicBool::new(false),
+            suppressed: AtomicBool::new(false),
+        }
+    }
+
+    fn observe(&self, bytes: &[u8]) {
+        let mut buf = self.buf.lock().expect("recorder mutex");
+        if buf.len() + bytes.len() > RECORDER_CAP_BYTES {
+            self.suppressed.store(true, Ordering::SeqCst);
+            buf.clear();
+            return;
+        }
+        buf.extend_from_slice(bytes);
+    }
+
+    /// Marks the recorder so `finalize` becomes a no-op (upstream stream error).
+    fn suppress(&self) {
+        self.suppressed.store(true, Ordering::SeqCst);
+    }
+
+    fn finalize(&self) {
+        if self.finalized.swap(true, Ordering::SeqCst) || self.suppressed.load(Ordering::SeqCst) {
+            return;
+        }
+        let buf = self.buf.lock().expect("recorder mutex");
+        // No usage block (error bodies, non-SSE responses, capped streams): log nothing.
+        let Some(usage) = crate::usage::parse_sse_usage(&buf) else {
+            return;
+        };
+        // A persistence failure must never break the (already delivered) forwarded stream.
+        let _ = self.store.log(&self.session_id, usage);
+    }
 }
 
 /// Hop-by-hop headers (RFC 7230 §6.1) that a proxy must not forward, plus `host` (reqwest
