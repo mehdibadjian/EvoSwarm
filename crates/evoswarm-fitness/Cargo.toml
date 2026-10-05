@@ -6,6 +6,11 @@ edition = "2021"
 [dependencies]
 evoswarm-core = { workspace = true }
 thiserror = { workspace = true }
+sha2 = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3"
+evoswarm-engine = { workspace = true }
+evoswarm-sandbox = { workspace = true }
+async-trait = { workspace = true }
+tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros", "sync"] }
