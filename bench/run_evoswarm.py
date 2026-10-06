@@ -14,6 +14,8 @@ the cap helper), not the provider round-trip; `run()` fails loudly rather than
 returning a fabricated solve.
 """
 
+from __future__ import annotations
+
 from bench.config import (
     HELD_OUT_POLICY,
     MODEL_ROLES,

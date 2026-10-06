@@ -12,6 +12,8 @@ in one pass, so a broken suite yields a single actionable message rather than
 one failure per reload.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from pathlib import Path
 
