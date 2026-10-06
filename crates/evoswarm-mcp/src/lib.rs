@@ -121,6 +121,7 @@ impl Server {
             "evolve" => Ok(self.evolve(&arguments)),
             "job_status" => Ok(self.job_status(&arguments)),
             "job_result" => Ok(self.job_result(&arguments)),
+            "cancel_job" => Ok(self.cancel_job(&arguments)),
             other => Err(RpcError::new(
                 INVALID_PARAMS,
                 format!("unknown tool: {other}"),
@@ -265,6 +266,59 @@ impl Server {
 
         tool_result(&record.job_id, record.status, self.root.as_path(), partial)
     }
+
+    /// The `cancel_job` tool (e3-4): durably halts a job by moving its ledger row to
+    /// `Cancelled`, the state the engine loop keys off to stop dispatching after in-flight calls
+    /// conclude. Idempotency is the story's contract (AC3): a job that is already `Cancelled`
+    /// returns the same result with **no error**, so the tool guards on the current state rather
+    /// than re-issuing a `Cancelled -> Cancelled` transition the ledger forbids. A job that
+    /// reached a *different* terminal state (`Completed`/`Failed`/`BudgetExhausted`) is refused
+    /// with a tool error naming that state — cancelling must not silently rewrite a real outcome.
+    ///
+    /// SEAM: the contract's `best_verified_candidate` is produced by the engine's in-memory
+    /// selection pass (`selection::select_verified_winner`) and never persisted as a queryable
+    /// per-job field (the generations table stores only opaque population JSON), so it is
+    /// returned as explicit `null` rather than scraped or invented. AC1 ("no new model calls
+    /// start after those in flight") is the live effect on the engine loop and needs a running
+    /// daemon + LLM keys (roadmap §7); the durable `Cancelled` transition asserted here is the
+    /// tool's real, observable half of that contract.
+    fn cancel_job(&self, arguments: &Value) -> Value {
+        let id = arg_str(arguments, "id");
+        if id.trim().is_empty() {
+            return tool_error("`id` is required: cancel_job takes the job id to halt.");
+        }
+
+        let record = match self.ledger.read_job(id) {
+            Ok(record) => record,
+            Err(evoswarm_ledger::LedgerError::NotFound(_)) => {
+                return tool_error(format!("job {id} not found"))
+            }
+            Err(e) => return tool_error(format!("failed to read job {id}: {e}")),
+        };
+
+        match record.status {
+            // Already cancelled: the idempotent success path (AC3). No transition, no error.
+            JobStatus::Cancelled => tool_cancelled(&record.job_id),
+            // Active states the engine is running from: cancel durably.
+            JobStatus::Queued | JobStatus::Running => {
+                if let Err(e) = self.ledger.transition(id, JobStatus::Cancelled) {
+                    return tool_error(format!("failed to cancel job {id}: {e}"));
+                }
+                tool_cancelled(id)
+            }
+            // A job that finished some other way is not cancellable — refuse rather than rewrite.
+            other => {
+                let state = serde_json::to_value(other)
+                    .ok()
+                    .and_then(|v| v.as_str().map(str::to_string))
+                    .unwrap_or_else(|| "terminal".to_string());
+                tool_error(format!(
+                    "job {id} is already {state} and cannot be cancelled (a terminal outcome \
+                     is not overwritten)."
+                ))
+            }
+        }
+    }
 }
 
 /// The `initialize` result: the shape a client negotiates before calling any tool.
@@ -345,7 +399,42 @@ fn tool_definitions() -> Vec<Value> {
                 "required": ["id"]
             }
         }),
+        json!({
+            "name": "cancel_job",
+            "description": "Halt a delegated job: durably marks it cancelled so the engine \
+                            stops dispatching after in-flight calls conclude. Idempotent if \
+                            already cancelled. best_verified_candidate is null until the \
+                            engine persists it.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string", "description": "Job id from an `evolve` ticket." }
+                },
+                "required": ["id"]
+            }
+        }),
     ]
+}
+
+/// A successful tool result carrying the cancelled job status. `status` is the contract's
+/// literal `"cancelled"`, and `best_verified_candidate` is present-but-null: the winning
+/// candidate id is computed by the engine's in-memory selection pass and never persisted per-job,
+/// so reporting a scraped or invented id would be worse than admitting it is not observable here
+/// (SEAM). Both the freshly-cancelled and the already-cancelled (idempotent) paths return this
+/// identical shape, which is exactly what makes the operation idempotent.
+fn tool_cancelled(job_id: &str) -> Value {
+    json!({
+        "content": [{
+            "type": "text",
+            "text": format!("job {job_id}: cancelled (best verified candidate not yet persisted)")
+        }],
+        "structuredContent": {
+            "job_id": job_id,
+            "status": "cancelled",
+            "best_verified_candidate": Value::Null,
+        },
+        "isError": false
+    })
 }
 
 /// A successful tool result carrying the full job status contract. `state` is serialised
