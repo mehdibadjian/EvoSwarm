@@ -53,7 +53,7 @@ development_status:
   # Epic 3: Claude Code Integration (MCP)
   e3-1-evolve-tool: review  # SEAM: JSON-RPC layer + evolve schema/tool verified in-process (durable Queued ticket, test_command + path-escape rejection); live Claude Code stdio end-to-end needs daemon + LLM keys (roadmap §7)
   e3-2-job-status-tool: review  # SEAM: state+generation read from the ledger (max_generation), not-found/id-required paths verified in-process; best_score/spend_usd/eta_seconds returned as explicit null because the engine keeps them in-memory and does not persist a per-job progress row, and live Claude Code e2e needs daemon + LLM keys (roadmap §7)
-  e3-3-job-result-tool: in-progress
+  e3-3-job-result-tool: review  # SEAM: branch/patch_path/report_path + *_exists wired to e1-11 artifacts::emit layout and verified against the real filesystem (canonicalised root), plus partial=true mid-run peek; score/tests_passed returned as explicit null because the engine renders them into the markdown report only and never persists per-job data, and AC3 (apply patch + tests pass) needs daemon + LLM keys (roadmap §7)
   e3-4-cancel-job-tool: backlog
   e3-5-context-guard: done
   e3-6-setup-guide: backlog
