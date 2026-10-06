@@ -24,3 +24,4 @@ evoswarm-memory = { path = "crates/evoswarm-memory" }
 evoswarm-ledger = { path = "crates/evoswarm-ledger" }
 evoswarm-gateway = { path = "crates/evoswarm-gateway" }
 evoswarm-engine = { path = "crates/evoswarm-engine" }
+evoswarm-mcp = { path = "crates/evoswarm-mcp" }

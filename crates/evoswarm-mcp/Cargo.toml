@@ -1,0 +1,15 @@
+[package]
+name = "evoswarm-mcp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+evoswarm-core = { workspace = true }
+evoswarm-ledger = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

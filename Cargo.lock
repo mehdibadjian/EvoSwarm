@@ -397,6 +397,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "evoswarm-mcp"
+version = "0.1.0"
+dependencies = [
+ "evoswarm-core",
+ "evoswarm-ledger",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
 name = "evoswarm-memory"
 version = "0.1.0"
 dependencies = [
