@@ -23,32 +23,44 @@ use futures::{StreamExt, TryStreamExt};
 use thiserror::Error;
 
 use crate::config::GatewayConfig;
+use crate::injection::{self, ExemplarInjector};
 
 /// Errors forwarding a request upstream.
 #[derive(Debug, Error)]
 pub enum ProxyError {
     #[error("upstream request failed: {0}")]
     Upstream(#[from] reqwest::Error),
+    #[error("request body could not be buffered for injection: {0}")]
+    Body(String),
 }
 
 impl IntoResponse for ProxyError {
     fn into_response(self) -> Response {
         // A gateway-to-upstream failure is reported as a 502; the client sees a clean error
         // rather than a half-open stream. (Upstream 4xx/5xx are forwarded verbatim, not here.)
-        (
-            StatusCode::BAD_GATEWAY,
-            format!("gateway upstream error: {self}"),
-        )
-            .into_response()
+        // A body the gateway cannot buffer for injection is the caller's problem, so 400.
+        let (status, message) = match self {
+            ProxyError::Upstream(e) => (
+                StatusCode::BAD_GATEWAY,
+                format!("gateway upstream error: {e}"),
+            ),
+            ProxyError::Body(e) => (
+                StatusCode::BAD_REQUEST,
+                format!("gateway could not read request body: {e}"),
+            ),
+        };
+        (status, message).into_response()
     }
 }
 
 /// Shared proxy state: the validated config plus one pooled reqwest client, and — when
-/// e4-2 usage logging is enabled — the SQLite usage store the stream tee writes to.
+/// e4-2 usage logging is enabled — the SQLite usage store the stream tee writes to. When
+/// e4-4 injection is wired, the optional exemplar source behind the [`ExemplarInjector`] seam.
 pub struct ProxyState {
     pub config: GatewayConfig,
     client: reqwest::Client,
     usage_store: Option<Arc<crate::usage::UsageStore>>,
+    injector: Option<Arc<dyn ExemplarInjector>>,
 }
 
 impl ProxyState {
@@ -65,6 +77,33 @@ impl ProxyState {
         config: GatewayConfig,
         usage_store: Option<Arc<crate::usage::UsageStore>>,
     ) -> Result<Self, ProxyError> {
+        Self::build(config, usage_store, None)
+    }
+
+    /// Builds the proxy state with an optional e4-4 exemplar injector (no usage store).
+    pub fn new_with_injector(
+        config: GatewayConfig,
+        injector: Option<Arc<dyn ExemplarInjector>>,
+    ) -> Result<Self, ProxyError> {
+        Self::build(config, None, injector)
+    }
+
+    /// Builds the proxy state with both optional collaborators. This is the full form the
+    /// other constructors delegate to; tests use it to wire injection **and** accounting
+    /// together, which is exactly what e4-4's AC2 requires (opt out of injection, still log).
+    pub fn new_full(
+        config: GatewayConfig,
+        usage_store: Option<Arc<crate::usage::UsageStore>>,
+        injector: Option<Arc<dyn ExemplarInjector>>,
+    ) -> Result<Self, ProxyError> {
+        Self::build(config, usage_store, injector)
+    }
+
+    fn build(
+        config: GatewayConfig,
+        usage_store: Option<Arc<crate::usage::UsageStore>>,
+        injector: Option<Arc<dyn ExemplarInjector>>,
+    ) -> Result<Self, ProxyError> {
         // `default-features = false` on reqwest means no automatic gzip/brotli/deflate
         // decoding, so the bytes we forward are exactly what upstream sent. `no_proxy` keeps
         // the gateway from being surprised by ambient HTTP(S)_PROXY env vars. A shared client
@@ -77,6 +116,7 @@ impl ProxyState {
             config,
             client,
             usage_store,
+            injector,
         })
     }
 }
@@ -87,6 +127,13 @@ pub fn router(state: Arc<ProxyState>) -> Router {
         .route("/{*path}", any(forward))
         .with_state(state)
 }
+
+/// Cap on a request body buffered for e4-4 injection (8 MiB). Rewriting needs the whole
+/// document, so this bounds what the gateway will hold in memory per injected request; past it
+/// the request fails as 400 rather than making the proxy allocate without limit. A body this
+/// large is not a Claude Code chat turn. Opting out of injection also opts out of buffering —
+/// the streamed path has no such cap.
+const INJECT_BODY_CAP_BYTES: usize = 8 * 1024 * 1024;
 
 /// Forwards one request to the upstream and streams the response back.
 async fn forward(
@@ -120,9 +167,46 @@ async fn forward(
     // `host` (reqwest sets it from the URL).
     upstream = upstream.headers(strip_hop_by_hop(parts.headers.clone()));
 
-    // Forward the request body as a stream (never buffered in full).
-    let req_stream = Body::new(body).into_data_stream();
-    upstream = upstream.body(reqwest::Body::wrap_stream(req_stream));
+    // e4-4: injection is gated on three things — an injector is wired, the operator has not
+    // disabled it globally (`gateway.inject = false`), and this request has not opted out with
+    // `x-evoswarm-inject: off`. The gate is evaluated before the injector is touched, so an
+    // opted-out request performs zero memory lookups rather than a lookup whose result is
+    // thrown away. Returning the injector as an `Option` keeps that ordering compiler-checked
+    // instead of resting on an unwrap.
+    let injector = match &state.injector {
+        Some(injector) if state.config.inject && !injection::header_opts_out(&parts.headers) => {
+            Some(injector)
+        }
+        _ => None,
+    };
+
+    match injector {
+        Some(injector) => {
+            // Buffering is the price of rewriting the body: the injector must see the complete
+            // JSON request. The streamed path below is what runs when injection is off, so
+            // opting out also opts out of the buffer.
+            let bytes = axum::body::to_bytes(body, INJECT_BODY_CAP_BYTES)
+                .await
+                .map_err(|e| ProxyError::Body(e.to_string()))?;
+            // A body-less request (GET/DELETE) has nothing to rewrite; sending no body at all
+            // avoids inventing a `content-length: 0` the client never sent.
+            if !bytes.is_empty() {
+                // `unwrap_or_else` keeps the original bytes when the injector declines (no
+                // relevant exemplars, lookup timeout, unparseable body): injection can change a
+                // request but never break one, per AD-2.
+                let outgoing = injector
+                    .inject(&bytes)
+                    .await
+                    .unwrap_or_else(|| bytes.to_vec());
+                upstream = upstream.body(outgoing);
+            }
+        }
+        None => {
+            // Forward the request body as a stream (never buffered in full).
+            let req_stream = Body::new(body).into_data_stream();
+            upstream = upstream.body(reqwest::Body::wrap_stream(req_stream));
+        }
+    }
 
     let upstream_resp = upstream.send().await?;
 

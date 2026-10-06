@@ -6,11 +6,13 @@
 //! accounting; e4-4 adds injection opt-out; e4-5 adds the p95 TTFT latency gate.
 
 pub mod config;
+pub mod injection;
 pub mod latency;
 pub mod proxy;
 pub mod usage;
 
 pub use config::{ConfigError, GatewayConfig};
+pub use injection::{header_opts_out, ExemplarInjector, INJECT_HEADER, INJECT_OFF_VALUE};
 pub use latency::{Budget, LatencyBudget};
 pub use proxy::{ProxyError, ProxyState};
 pub use usage::{UsageError, UsagePricing, UsageRecord, UsageStore};
