@@ -119,6 +119,7 @@ impl Server {
 
         match name {
             "evolve" => Ok(self.evolve(&arguments)),
+            "job_status" => Ok(self.job_status(&arguments)),
             other => Err(RpcError::new(
                 INVALID_PARAMS,
                 format!("unknown tool: {other}"),
@@ -198,6 +199,38 @@ impl Server {
 
         tool_ticket(&job_id, JobStatus::Queued)
     }
+
+    /// The `job_status` tool (e3-2): reports progress for a job so a polling Claude Code
+    /// session can decide when to re-check. It reads only what the ledger durably carries —
+    /// `state` (the job status) and `generation` (the highest committed generation, so a
+    /// not-yet-started job is 0) — and returns the engine-sourced fields (`best_score`,
+    /// `spend_usd`, `eta_seconds`) as explicit `null`, because the engine keeps those in
+    /// memory and does not yet persist them per job. Reporting a fabricated 0.0 spend or a
+    /// made-up ETA would be worse than admitting the value is not observable here (SEAM).
+    fn job_status(&self, arguments: &Value) -> Value {
+        let id = arg_str(arguments, "id");
+        if id.trim().is_empty() {
+            return tool_error("`id` is required: job_status takes the job id to poll.");
+        }
+
+        // A ledger read is the authority; NotFound becomes a tool error that names the id, so
+        // the caller learns which job vanished rather than getting an opaque failure.
+        let record = match self.ledger.read_job(id) {
+            Ok(record) => record,
+            Err(evoswarm_ledger::LedgerError::NotFound(_)) => {
+                return tool_error(format!("job {id} not found"))
+            }
+            Err(e) => return tool_error(format!("failed to read job {id}: {e}")),
+        };
+
+        let generation = match self.ledger.max_generation(id) {
+            Ok(Some(max)) => max,
+            Ok(None) => 0,
+            Err(e) => return tool_error(format!("failed to read generation for job {id}: {e}")),
+        };
+
+        tool_status(&record.job_id, record.status, generation)
+    }
 }
 
 /// The `initialize` result: the shape a client negotiates before calling any tool.
@@ -216,36 +249,74 @@ fn tools_list_result() -> Value {
 }
 
 fn tool_definitions() -> Vec<Value> {
-    vec![json!({
-        "name": "evolve",
-        "description": "Delegate a test-backed engineering task to EvoSwarm; returns a job \
-                        ticket immediately so the search runs in the background.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "task": { "type": "string", "description": "What to accomplish." },
-                "test_command": {
-                    "type": "string",
-                    "description": "Command that runs the task's test suite (required)."
-                },
-                "paths": {
-                    "type": "array",
-                    "items": { "type": "string" },
-                    "description": "Repository paths the search may touch; each must sit \
-                                    inside the repo root."
-                },
-                "budget": {
-                    "type": "object",
-                    "properties": {
-                        "tokens": { "type": "integer", "minimum": 0 },
-                        "dollars": { "type": "number", "minimum": 0 }
+    vec![
+        json!({
+            "name": "evolve",
+            "description": "Delegate a test-backed engineering task to EvoSwarm; returns a job \
+                            ticket immediately so the search runs in the background.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "task": { "type": "string", "description": "What to accomplish." },
+                    "test_command": {
+                        "type": "string",
+                        "description": "Command that runs the task's test suite (required)."
+                    },
+                    "paths": {
+                        "type": "array",
+                        "items": { "type": "string" },
+                        "description": "Repository paths the search may touch; each must sit \
+                                        inside the repo root."
+                    },
+                    "budget": {
+                        "type": "object",
+                        "properties": {
+                            "tokens": { "type": "integer", "minimum": 0 },
+                            "dollars": { "type": "number", "minimum": 0 }
+                        }
                     }
-                }
-            },
-            // The four story §2 params are required so a client validates before calling.
-            "required": ["task", "test_command", "paths", "budget"]
-        }
-    })]
+                },
+                // The four story §2 params are required so a client validates before calling.
+                "required": ["task", "test_command", "paths", "budget"]
+            }
+        }),
+        json!({
+            "name": "job_status",
+            "description": "Poll a delegated job for its state, generation, best score, \
+                            spend and ETA. Null values mean the engine has not persisted \
+                            that field yet.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string", "description": "Job id from an `evolve` ticket." }
+                },
+                "required": ["id"]
+            }
+        }),
+    ]
+}
+
+/// A successful tool result carrying the full job status contract. `state` is serialised
+/// from `JobStatus` (snake_case: queued/running/completed/failed/budget_exhausted/cancelled).
+/// `best_score`/`spend_usd`/`eta_seconds` are the engine-sourced progress fields; the ledger
+/// does not persist them yet, so they are present-but-null rather than invented.
+fn tool_status(job_id: &str, status: JobStatus, generation: i64) -> Value {
+    let state = serde_json::to_value(status).unwrap_or_else(|_| json!("queued"));
+    json!({
+        "content": [{
+            "type": "text",
+            "text": format!("job {job_id}: state={state}, generation={generation}")
+        }],
+        "structuredContent": {
+            "job_id": job_id,
+            "state": state,
+            "generation": generation,
+            "best_score": Value::Null,
+            "spend_usd": Value::Null,
+            "eta_seconds": Value::Null,
+        },
+        "isError": false
+    })
 }
 
 /// Reads a required string argument, or `""` when absent / not a string (the validator
