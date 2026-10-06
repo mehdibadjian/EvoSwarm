@@ -120,6 +120,7 @@ impl Server {
         match name {
             "evolve" => Ok(self.evolve(&arguments)),
             "job_status" => Ok(self.job_status(&arguments)),
+            "job_result" => Ok(self.job_result(&arguments)),
             other => Err(RpcError::new(
                 INVALID_PARAMS,
                 format!("unknown tool: {other}"),
@@ -231,6 +232,39 @@ impl Server {
 
         tool_status(&record.job_id, record.status, generation)
     }
+
+    /// The `job_result` tool (e3-3): fetches a job's artifacts. The branch name and the
+    /// patch/report paths are derived from the exact deterministic layout e1-11's
+    /// `artifacts::emit` writes (`.evoswarm/patches/<id>.patch`, `.evoswarm/reports/<id>.md`,
+    /// branch `evoswarm/<id>`), and existence is checked against the real filesystem rooted at
+    /// the server's canonicalised repo root — so the tool reports what is actually on disk, not
+    /// a fabricated path. A completed job always surfaces its artifact paths; an unfinished one
+    /// does so only under `partial=true`, which lets a caller peek at mid-run artifacts. The
+    /// engine-computed fields (`score`, `tests_passed`) are rendered *into* the markdown report
+    /// and never persisted per-job, so they are returned as explicit `null` rather than scraped
+    /// or invented. AC3 ("apply the patch and the tests pass") is the live end-to-end and needs
+    /// a running daemon + LLM keys (roadmap §7), so it is not asserted here (SEAM).
+    fn job_result(&self, arguments: &Value) -> Value {
+        let id = arg_str(arguments, "id");
+        if id.trim().is_empty() {
+            return tool_error("`id` is required: job_result takes the job id to fetch.");
+        }
+        // `partial` is an optional boolean; absent or non-boolean is treated as false.
+        let partial = arguments
+            .get("partial")
+            .and_then(|v| v.as_bool())
+            .unwrap_or(false);
+
+        let record = match self.ledger.read_job(id) {
+            Ok(record) => record,
+            Err(evoswarm_ledger::LedgerError::NotFound(_)) => {
+                return tool_error(format!("job {id} not found"))
+            }
+            Err(e) => return tool_error(format!("failed to read job {id}: {e}")),
+        };
+
+        tool_result(&record.job_id, record.status, self.root.as_path(), partial)
+    }
 }
 
 /// The `initialize` result: the shape a client negotiates before calling any tool.
@@ -293,6 +327,24 @@ fn tool_definitions() -> Vec<Value> {
                 "required": ["id"]
             }
         }),
+        json!({
+            "name": "job_result",
+            "description": "Fetch a job's artifacts: branch, patch and report paths, and \
+                            whether they are on disk. Pass partial=true to peek at mid-run \
+                            artifacts. Score and test counts are markdown-only, so returned \
+                            as null.",
+            "inputSchema": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "string", "description": "Job id from an `evolve` ticket." },
+                    "partial": {
+                        "type": "boolean",
+                        "description": "Surface artifacts even when the job is not completed."
+                    }
+                },
+                "required": ["id"]
+            }
+        }),
     ]
 }
 
@@ -314,6 +366,71 @@ fn tool_status(job_id: &str, status: JobStatus, generation: i64) -> Value {
             "best_score": Value::Null,
             "spend_usd": Value::Null,
             "eta_seconds": Value::Null,
+        },
+        "isError": false
+    })
+}
+
+/// Returns `true` when artifacts may be surfaced: only once a job reaches `Completed`, or when
+/// the caller explicitly asks to peek mid-run with `partial=true`. A failed/cancelled/running
+/// job without `partial` yields `false`, so the tool reports "no patch yet" rather than
+/// pointing at a file that was never emitted.
+fn artifacts_visible(status: JobStatus, partial: bool) -> bool {
+    matches!(status, JobStatus::Completed) || partial
+}
+
+/// Builds the `job_result` structured payload for a job that exists in the ledger.
+///
+/// The branch and artifact paths are e1-11's deterministic layout; existence is a real
+/// filesystem check resolved against the canonicalised repo `root`, so a caller can tell a
+/// missing patch from a tool failure. Unfinished jobs without `partial` report `null` for the
+/// artifact fields (`state` alone), and `score`/`tests_passed` are always `null` — they live
+/// only in the markdown report, never as persisted per-job data.
+fn tool_result(job_id: &str, status: JobStatus, root: &std::path::Path, partial: bool) -> Value {
+    let state = serde_json::to_value(status).unwrap_or_else(|_| json!("queued"));
+
+    // Only when the artifacts *may* be visible do we name the branch/paths and hit the disk;
+    // otherwise those fields stay null (an unfinished job has nothing to apply).
+    let (branch, patch_path, report_path, patch_exists, report_exists) =
+        if artifacts_visible(status, partial) {
+            let patch_rel = format!(".evoswarm/patches/{job_id}.patch");
+            let report_rel = format!(".evoswarm/reports/{job_id}.md");
+            // Existence is verified against the real, canonicalised root — never fabricated.
+            let patch_ok = root.join(&patch_rel).is_file();
+            let report_ok = root.join(&report_rel).is_file();
+            (
+                json!(format!("evoswarm/{job_id}")),
+                json!(patch_rel),
+                json!(report_rel),
+                json!(patch_ok),
+                json!(report_ok),
+            )
+        } else {
+            (
+                Value::Null,
+                Value::Null,
+                Value::Null,
+                Value::Null,
+                Value::Null,
+            )
+        };
+
+    json!({
+        "content": [{
+            "type": "text",
+            "text": format!("job {job_id}: state={state}, partial={partial}")
+        }],
+        "structuredContent": {
+            "job_id": job_id,
+            "state": state,
+            "partial": partial,
+            "branch": branch,
+            "patch_path": patch_path,
+            "report_path": report_path,
+            "patch_exists": patch_exists,
+            "report_exists": report_exists,
+            "score": Value::Null,
+            "tests_passed": Value::Null,
         },
         "isError": false
     })
