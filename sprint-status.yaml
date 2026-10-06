@@ -51,7 +51,7 @@ development_status:
   e2-8-lineage-cli: backlog
 
   # Epic 3: Claude Code Integration (MCP)
-  e3-1-evolve-tool: backlog
+  e3-1-evolve-tool: ready-for-dev
   e3-2-job-status-tool: backlog
   e3-3-job-result-tool: backlog
   e3-4-cancel-job-tool: backlog
