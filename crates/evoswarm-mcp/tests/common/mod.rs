@@ -85,6 +85,29 @@ pub fn call_evolve(server: &Server, arguments: Value) -> Option<Value> {
     tools_call(server, "evolve", arguments)
 }
 
+/// An in-process extension for driving a single `tools/call` and returning the *result*
+/// object directly (not the JSON-RPC envelope). Test bodies speak in tool results; the
+/// envelope framing itself is asserted separately in e3-1. Implemented here as a trait so it
+/// reads like a method on the server without modifying the production type.
+pub trait Tools {
+    /// Calls `tool` with `arguments` and returns the `result` of the response, panicking if
+    /// the server produced no response or a top-level JSON-RPC `error` (a protocol fault).
+    fn tools_call_json(&self, tool: &str, arguments: Value) -> Option<Value>;
+}
+
+impl Tools for Server {
+    fn tools_call_json(&self, tool: &str, arguments: Value) -> Option<Value> {
+        let resp = tools_call(self, tool, arguments)?;
+        // A protocol error here is a bug in the test's request shape, not the behaviour under
+        // test; surface it loudly so it is never silently swallowed.
+        assert!(
+            resp.get("error").is_none(),
+            "unexpected JSON-RPC protocol error for tool {tool:?}: {resp}"
+        );
+        resp.get("result").cloned()
+    }
+}
+
 /// Extracts the `structuredContent` object from a `tools/call` result, or `None` if the
 /// result carries none (which is the shape of a tool error).
 pub fn structured_content(result: &Value) -> Option<&Value> {
