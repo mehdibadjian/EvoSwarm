@@ -104,11 +104,27 @@ async fn stub_handler(
             .unwrap(),
         // An endless slow stream; its drop-guard flips `slow_dropped` when cancelled.
         "/slow" => slow_response(slow_dropped),
+        // e4-4: echoes the request body back verbatim, so a test can assert what the upstream
+        // *actually received* (injected or original) rather than trusting the proxy's intent.
+        "/echo" => echo_response(req).await,
         _ => Response::builder()
             .status(StatusCode::NOT_FOUND)
             .body(Body::from("no such route"))
             .unwrap(),
     }
+}
+
+/// Collects the whole request body and returns it unchanged as an opaque byte stream. The
+/// gateway's injection decision is therefore observable end-to-end: bytes in == bytes back.
+async fn echo_response(req: axum::extract::Request) -> Response {
+    let body = axum::body::to_bytes(req.into_body(), usize::MAX)
+        .await
+        .expect("stub reads request body");
+    Response::builder()
+        .status(StatusCode::OK)
+        .header(header::CONTENT_TYPE, "application/octet-stream")
+        .body(Body::from(body))
+        .unwrap()
 }
 
 fn sse_response() -> Response {
@@ -196,6 +212,42 @@ pub async fn spawn_gateway_with_usage(
         .expect("valid config");
     let store = Arc::new(UsageStore::open(usage_db).expect("usage store"));
     let state = ProxyState::new_with_usage(config, Some(store)).expect("proxy state");
+    let app = router(Arc::new(state));
+
+    let listener = TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("bind gateway");
+    let addr = listener.local_addr().expect("gateway addr");
+    let handle = tokio::spawn(async move {
+        axum::serve(listener, app).await.expect("serve gateway");
+    });
+
+    Gateway {
+        base_url: format!("http://127.0.0.1:{}", addr.port()),
+        handle,
+    }
+}
+
+/// Boots the gateway with an e4-4 exemplar injector **and** (when `usage_db` is `Some`) e4-2
+/// usage logging, with `inject_enabled` standing in for the `gateway.inject` config flag.
+/// Wiring both is the point: AC2 requires that opting out of injection does not switch off
+/// accounting.
+pub async fn spawn_gateway_with_injector(
+    upstream_base_url: &str,
+    usage_db: Option<&std::path::Path>,
+    injector: Arc<dyn evoswarm_gateway::ExemplarInjector>,
+    inject_enabled: bool,
+) -> Gateway {
+    use evoswarm_gateway::config::GatewayConfig;
+    use evoswarm_gateway::proxy::{router, ProxyState};
+    use evoswarm_gateway::usage::UsageStore;
+
+    // listen_addr port is ignored: we bind an ephemeral port below and serve on it.
+    let config = GatewayConfig::new(upstream_base_url, "127.0.0.1:0".parse().unwrap())
+        .expect("valid config")
+        .with_inject(inject_enabled);
+    let store = usage_db.map(|path| Arc::new(UsageStore::open(path).expect("usage store")));
+    let state = ProxyState::new_full(config, store, Some(injector)).expect("proxy state");
     let app = router(Arc::new(state));
 
     let listener = TcpListener::bind("127.0.0.1:0")

@@ -23,6 +23,10 @@ pub struct GatewayConfig {
     pub upstream_base_url: String,
     /// Socket address the gateway binds and serves on.
     pub listen_addr: SocketAddr,
+    /// Master switch for exemplar injection (e4-4). `true` by default; `false` is equivalent
+    /// to every request carrying `x-evoswarm-inject: off` — the injector is never consulted.
+    /// Usage logging (e4-2) is unaffected either way.
+    pub inject: bool,
 }
 
 impl GatewayConfig {
@@ -42,7 +46,16 @@ impl GatewayConfig {
         Ok(Self {
             upstream_base_url: upstream_base_url.trim_end_matches('/').to_string(),
             listen_addr,
+            inject: true,
         })
+    }
+
+    /// Sets the e4-4 injection master switch, returning the config for chaining. `false`
+    /// bypasses the injector for every request; `true` (the default) leaves injection on and
+    /// still honours the per-request `x-evoswarm-inject: off` header.
+    pub fn with_inject(mut self, inject: bool) -> Self {
+        self.inject = inject;
+        self
     }
 }
 
@@ -76,5 +89,24 @@ mod tests {
             GatewayConfig::new("not a url", addr()),
             Err(ConfigError::InvalidUpstreamUrl(_, _))
         ));
+    }
+
+    /// e4-4: injection is on unless the operator turns it off, and `with_inject` is the only
+    /// way to change it — the default must not silently become opt-out.
+    #[test]
+    fn inject_defaults_to_on_and_is_overridable() {
+        let c = GatewayConfig::new("http://127.0.0.1:9000", addr()).unwrap();
+        assert!(c.inject, "injection is enabled by default");
+
+        assert!(!c.clone().with_inject(false).inject);
+        assert!(c.clone().with_inject(true).inject);
+        // The override is the only difference from the default config.
+        assert_eq!(
+            c.clone().with_inject(false),
+            GatewayConfig {
+                inject: false,
+                ..c.clone()
+            }
+        );
     }
 }
