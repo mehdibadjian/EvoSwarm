@@ -17,7 +17,7 @@ development_status:
   # Epic 0: The Crucible (Sandbox & Isolation)
   e0-1-sandbox-runner-interface: done
   e0-2-host-self-check: review  # SEAM: decide() + live unshare probe verified; cgroup-delegation/linger probes need delegated cgroups + systemd user bus (roadmap §6)
-  e0-3-apparmor-profile-for-bwrap: ready-for-dev
+  e0-3-apparmor-profile-for-bwrap: blocked  # BLOCKED: kernel has no AppArmor (CONFIG_SECURITY_APPARMOR unset, lsm= empty, /sys/module/apparmor absent); no aa-status/apparmor_parser. Profile+installer ship-able but "profile loads" and E0-2-pass gate unverifiable here. Roadmap §5/§6 unblock = AppArmor kernel+toolchain + root.
   e0-4-resource-limits: backlog
   e0-5-python-stack: done
   e0-6-csharp-stack: backlog
