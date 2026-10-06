@@ -38,7 +38,7 @@ development_status:
   e1-10-budget-enforcement: done
   e1-11-patch-and-report: done
   e1-12-resume-after-crash: done
-  e1-13-benchmark-suite: in-progress
+  e1-13-benchmark-suite: review  # SEAM: fixture integrity (30 tasks, >=10 python/>=10 csharp), structural fairness (shared TOKEN_CAP=500k/model-roles/sandbox/held-out bound by identity into both runners), enforce_cap boundary, and solve-rate delta + inclusive >=15.0 gate math all verified deterministically; live single-shot/EvoSwarm runs need LLM provider keys and C# fixture builds need the dotnet SDK (roadmap §6), so run() raises NotImplementedError and best live gate is deferred
 
   # Epic 2: System 1 Memory and Replay
   e2-1-content-addressed-blob-store: done
