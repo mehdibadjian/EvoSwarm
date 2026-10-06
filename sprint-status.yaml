@@ -52,7 +52,7 @@ development_status:
 
   # Epic 3: Claude Code Integration (MCP)
   e3-1-evolve-tool: review  # SEAM: JSON-RPC layer + evolve schema/tool verified in-process (durable Queued ticket, test_command + path-escape rejection); live Claude Code stdio end-to-end needs daemon + LLM keys (roadmap §7)
-  e3-2-job-status-tool: ready-for-dev
+  e3-2-job-status-tool: in-progress
   e3-3-job-result-tool: backlog
   e3-4-cancel-job-tool: backlog
   e3-5-context-guard: done
