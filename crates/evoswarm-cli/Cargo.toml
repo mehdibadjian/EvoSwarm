@@ -21,7 +21,9 @@ tokio = { workspace = true }
 uuid = { workspace = true }
 async-trait = { workspace = true }
 git2 = { workspace = true }
+axum = "0.8"
 
 [dev-dependencies]
 tempfile = { workspace = true }
+tower = { version = "0.5", features = ["util"] }
 tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros", "sync", "time"] }

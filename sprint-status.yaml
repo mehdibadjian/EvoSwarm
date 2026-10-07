@@ -70,7 +70,7 @@ development_status:
   e5-2-selection-mode-comparison: done
   e5-3-java-stack: review  # SEAM: pom-hash keying/cache-reuse/offline mvn cmd verified; live mvn -o test needs primed ~/.m2, 2GB cap needs e0-4 (roadmap §5)
   e5-4-c-and-cpp-stack: review  # SEAM: cmake cmd + gtest/catch2 parsers verified; live build needs gtest/catch2 libs, 1GB cap needs e0-4 (roadmap §5)
-  e5-5-test-triage-page: backlog
+  e5-5-test-triage-page: review
   e5-6-archive-health-report: review  # SEAM: occupancy/heatmap verified against in-process archive; per-generation Cell-node history needs FalkorDB (roadmap §5)
 
 execution_tiers:
