@@ -61,7 +61,7 @@ development_status:
   # Epic 4: Optional Streaming Gateway
   e4-1-transparent-pass-through: review # SEAM: verified against stub upstream (byte-fidelity, error propagation, structural abort); live-provider pass-through needs LLM keys (roadmap §7)
   e4-2-usage-logging: review # SEAM: usage tee + CLI verified against stub SSE frames and local sqlite; live-provider accounting needs LLM keys (roadmap §7)
-  e4-3-exemplar-injection: review
+  e4-3-exemplar-injection: done
   e4-4-injection-opt-out: review # SEAM: header/config bypass + 0-call fast path verified against stub upstream; injector is a test stub because e4-3 (FalkorDB exemplars) is blocked on e2-5 (roadmap §5)
   e4-5-latency-budget-in-ci: review # SEAM: 20-stream TTFT budget measured loopback-vs-loopback (added p95 ~2ms <= 50ms); IDE-vs-provider budget needs live provider (roadmap §7)
 
