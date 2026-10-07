@@ -15,7 +15,6 @@
 
 use std::collections::HashSet;
 
-use async_trait::async_trait;
 use evoswarm_core::Candidate;
 use evoswarm_models::{call_hash, Role};
 use thiserror::Error;
@@ -37,31 +36,7 @@ pub enum SeedingError {
     #[error("mutator model failed: {0}")]
     ModelFailure(String),
 }
-
-/// Seeding configuration: how big the population is and which model draws the drafts.
-#[derive(Debug, Clone)]
-pub struct SeedConfig {
-    pub population_size: usize,
-    pub model_id: String,
-    pub base_temperature: f64,
-}
-
-/// The graph-backed memory seam (architecture-rules §3). Epic 2 (e2-5) supplies the FalkorDB
-/// implementation that injects past winning patches; Epic 1 uses `EmptyMemorySeeder`.
-#[async_trait]
-pub trait MemorySeeder: Send + Sync {
-    async fn seed(&self, cfg: &SeedConfig) -> Vec<Candidate>;
-}
-
-/// The Epic-1 no-op memory seeder: injects nothing, so Gen 0 is the baseline plus mutator drafts.
-pub struct EmptyMemorySeeder;
-
-#[async_trait]
-impl MemorySeeder for EmptyMemorySeeder {
-    async fn seed(&self, _cfg: &SeedConfig) -> Vec<Candidate> {
-        Vec::new()
-    }
-}
+pub use evoswarm_core::{EmptyMemorySeeder, MemorySeeder, SeedConfig};
 
 /// The collaborators seeding needs. Borrowed so a caller owns the client, the memory store and
 /// the baseline patch, keeping this module free of ownership and lifetime tangles.

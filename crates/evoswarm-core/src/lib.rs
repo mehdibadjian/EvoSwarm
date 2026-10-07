@@ -7,6 +7,7 @@ pub mod outcome;
 pub mod path_guard;
 pub mod provenance;
 pub mod report_model;
+pub mod seeding_traits;
 pub mod usage;
 
 pub use adversary::{AdversaryStatus, AdversaryTest};
@@ -18,4 +19,6 @@ pub use outcome::SelectionOutcome;
 pub use path_guard::{require_within_root, PathEscape};
 pub use provenance::{PassVector, TestOrigin};
 pub use report_model::{LineageNode, RoleUsage, ScoreBreakdown, WinnerSummary};
+pub use seeding_traits::{EmptyMemorySeeder, MemorySeeder, SeedConfig};
 pub use usage::Usage;
+

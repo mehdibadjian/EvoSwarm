@@ -325,6 +325,7 @@ dependencies = [
 name = "evoswarm-core"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "serde",
  "serde_json",
  "tempfile",
@@ -416,6 +417,7 @@ name = "evoswarm-memory"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "evoswarm-core",
  "serde",
  "serde_json",
  "sha2",
