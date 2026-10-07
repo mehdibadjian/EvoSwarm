@@ -67,7 +67,7 @@ development_status:
 
   # Epic 5: MAP-Elites and Multi-Stack Expansion
   e5-1-map-elites-grid: review  # SEAM: binning/replacement verified against in-process RecordingCellSink; FalkorDB Cell-node write needs redis-compatible FalkorDB (roadmap §5)
-  e5-2-selection-mode-comparison: review
+  e5-2-selection-mode-comparison: done
   e5-3-java-stack: review  # SEAM: pom-hash keying/cache-reuse/offline mvn cmd verified; live mvn -o test needs primed ~/.m2, 2GB cap needs e0-4 (roadmap §5)
   e5-4-c-and-cpp-stack: review  # SEAM: cmake cmd + gtest/catch2 parsers verified; live build needs gtest/catch2 libs, 1GB cap needs e0-4 (roadmap §5)
   e5-5-test-triage-page: backlog
