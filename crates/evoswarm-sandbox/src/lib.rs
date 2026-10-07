@@ -14,6 +14,7 @@
 
 pub mod bwrap;
 pub mod calibration;
+pub mod limits;
 pub mod red_team;
 pub mod seccomp;
 pub mod stacks;
