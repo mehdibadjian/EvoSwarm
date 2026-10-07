@@ -86,7 +86,49 @@ flowchart TD
 
 ---
 
-## 4. Fitness Function & Test Provenance
+## 4. Quickstart & Claude Code MCP Setup
+
+Detailed step-by-step setup instructions are documented in the [Claude Code MCP Setup Guide](docs/guides/mcp-setup.md).
+
+### 1. Verify Host Isolation (E0-2)
+```bash
+evoswarm status
+# Output: sandbox: ready (exit 0)
+```
+If `sandbox: degraded` is reported, apply the fixes outlined in [Troubleshooting Host Self-Check](#troubleshooting-host-self-check) or [docs/guides/mcp-setup.md](docs/guides/mcp-setup.md).
+
+### 2. Register MCP Server with Claude Code
+Using the CLI:
+```bash
+claude mcp add evoswarm -- evoswarm mcp
+```
+Or via Claude Code configuration snippet (`~/.claude.json`):
+```json
+{
+  "mcpServers": {
+    "evoswarm": {
+      "command": "evoswarm",
+      "args": ["mcp"]
+    }
+  }
+}
+```
+
+### 3. Run a Sample Evolution Job (<15 min)
+Within a Claude Code session:
+```text
+> Use EvoSwarm to optimize src/module.py: test_command: "pytest tests/test_module.py"
+```
+
+### Troubleshooting Host Self-Check
+- **`UserNamespaces`:** Ensure unprivileged user namespaces are enabled:
+  `sudo sysctl -w kernel.unprivileged_userns_clone=1` (and adjust AppArmor profile `/etc/apparmor.d/bwrap` if blocked).
+- **`CgroupV2`:** Delegate controllers to user sessions by creating `/etc/systemd/system/user@.service.d/delegate.conf` with `[Service]\nDelegate=memory pids cpu io` and running `systemctl daemon-reload`.
+- **`Linger`:** Enable user lingering so background services persist: `loginctl enable-linger $USER`.
+
+---
+
+## 5. Fitness Function & Test Provenance
 
 Candidate solutions are evaluated through a strict **gate-first** pipeline followed by a multi-objective weighted score.
 
