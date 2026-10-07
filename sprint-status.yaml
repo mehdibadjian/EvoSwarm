@@ -20,7 +20,7 @@ development_status:
   e0-3-apparmor-profile-for-bwrap: done
   e0-4-resource-limits: backlog
   e0-5-python-stack: done
-  e0-6-csharp-stack: backlog
+  e0-6-csharp-stack: review
   e0-7-tamper-proof-tests: done
   e0-8-red-team-suite: review  # SEAM: bwrap escape-denial subset asserted (egress/DNS/write/pid1 + seccomp syscalls since e2-7); shadow-read/cgroup still deferred (uid 0, no e0-4) (roadmap §7)
   e0-9-limit-calibration: review  # SEAM: pure stats/profile math verified; live 100-run measurement needs csharp/dotnet (absent) (roadmap §5)
