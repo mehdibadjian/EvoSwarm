@@ -45,7 +45,7 @@ development_status:
   e2-2-lineage-written-to-falkordb: done
   e2-3-repo-and-toolchain-fingerprints: done
   e2-4-verified-replay: done
-  e2-5-seeding-from-similar-winners: backlog
+  e2-5-seeding-from-similar-winners: review
   e2-6-approve-candidate-tests: done
   e2-7-seccomp-filter: done
   e2-8-lineage-cli: done
