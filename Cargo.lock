@@ -413,9 +413,13 @@ dependencies = [
 name = "evoswarm-memory"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "serde",
+ "serde_json",
  "sha2",
  "tempfile",
  "thiserror",
+ "tokio",
 ]
 
 [[package]]
