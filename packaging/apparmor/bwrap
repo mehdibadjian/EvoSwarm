@@ -1,0 +1,11 @@
+# AppArmor profile for bubblewrap (bwrap) unprivileged user namespaces (e0-3)
+# Allows unprivileged user namespace creation and unconfined containment
+# required on modern Linux / Ubuntu 23.10+ / 24.04+.
+
+abi <abi/4.0>,
+include <tunables/global>
+
+profile bwrap /{usr/,}bin/bwrap flags=(unconfined) {
+  userns,
+  include if exists <local/bwrap>
+}
