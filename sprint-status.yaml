@@ -42,7 +42,7 @@ development_status:
 
   # Epic 2: System 1 Memory and Replay
   e2-1-content-addressed-blob-store: done
-  e2-2-lineage-written-to-falkordb: backlog
+  e2-2-lineage-written-to-falkordb: review
   e2-3-repo-and-toolchain-fingerprints: done
   e2-4-verified-replay: backlog
   e2-5-seeding-from-similar-winners: backlog
