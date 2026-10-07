@@ -373,6 +373,7 @@ dependencies = [
  "axum",
  "bytes",
  "evoswarm-core",
+ "evoswarm-memory",
  "futures",
  "http-body-util",
  "reqwest",
