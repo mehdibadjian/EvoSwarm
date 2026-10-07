@@ -12,7 +12,7 @@ development_status:
   epic-2: done
   epic-3: done
   epic-4: done
-  epic-5: in-progress
+  epic-5: done
 
   # Epic 0: The Crucible (Sandbox & Isolation)
   e0-1-sandbox-runner-interface: done
@@ -66,12 +66,12 @@ development_status:
   e4-5-latency-budget-in-ci: done # SEAM: 20-stream TTFT budget measured loopback-vs-loopback (added p95 ~2ms <= 50ms); IDE-vs-provider budget needs live provider (roadmap §7)
 
   # Epic 5: MAP-Elites and Multi-Stack Expansion
-  e5-1-map-elites-grid: review  # SEAM: binning/replacement verified against in-process RecordingCellSink; FalkorDB Cell-node write needs redis-compatible FalkorDB (roadmap §5)
+  e5-1-map-elites-grid: done # SEAM: binning/replacement verified against in-process RecordingCellSink; FalkorDB Cell-node write needs redis-compatible FalkorDB (roadmap §5)
   e5-2-selection-mode-comparison: done
-  e5-3-java-stack: review  # SEAM: pom-hash keying/cache-reuse/offline mvn cmd verified; live mvn -o test needs primed ~/.m2, 2GB cap needs e0-4 (roadmap §5)
-  e5-4-c-and-cpp-stack: review  # SEAM: cmake cmd + gtest/catch2 parsers verified; live build needs gtest/catch2 libs, 1GB cap needs e0-4 (roadmap §5)
+  e5-3-java-stack: done # SEAM: pom-hash keying/cache-reuse/offline mvn cmd verified; live mvn -o test needs primed ~/.m2, 2GB cap needs e0-4 (roadmap §5)
+  e5-4-c-and-cpp-stack: done # SEAM: cmake cmd + gtest/catch2 parsers verified; live build needs gtest/catch2 libs, 1GB cap needs e0-4 (roadmap §5)
   e5-5-test-triage-page: done
-  e5-6-archive-health-report: review  # SEAM: occupancy/heatmap verified against in-process archive; per-generation Cell-node history needs FalkorDB (roadmap §5)
+  e5-6-archive-health-report: done # SEAM: occupancy/heatmap verified against in-process archive; per-generation Cell-node history needs FalkorDB (roadmap §5)
 
 execution_tiers:
   # Epic 0 Tiers
