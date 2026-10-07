@@ -17,7 +17,7 @@ development_status:
   # Epic 0: The Crucible (Sandbox & Isolation)
   e0-1-sandbox-runner-interface: done
   e0-2-host-self-check: review  # SEAM: decide() + live unshare probe verified; cgroup-delegation/linger probes need delegated cgroups + systemd user bus (roadmap §6)
-  e0-3-apparmor-profile-for-bwrap: review
+  e0-3-apparmor-profile-for-bwrap: done
   e0-4-resource-limits: backlog
   e0-5-python-stack: done
   e0-6-csharp-stack: backlog
