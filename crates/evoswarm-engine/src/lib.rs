@@ -18,6 +18,7 @@ pub mod mutation;
 pub mod recovery;
 pub mod seeding;
 pub mod selection;
+pub mod selection_mode;
 
 pub use adversary::{
     compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
@@ -48,3 +49,8 @@ pub use seeding::{
 pub use selection::{
     select_verified_winner, HeldOutEvaluator, ScoredCandidate, SelectionDeps, SelectionError,
 };
+pub use selection_mode::{
+    compare_selection_runs, select_parents, SelectionComparisonReport, SelectionMode,
+    SelectionRunMetrics,
+};
+
