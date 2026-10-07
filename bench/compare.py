@@ -11,6 +11,8 @@ solved/token counts is the SEAM half (needs provider keys); this module is the
 deterministic arithmetic over those counts.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import Any
 
