@@ -56,7 +56,7 @@ development_status:
   e3-3-job-result-tool: review  # SEAM: branch/patch_path/report_path + *_exists wired to e1-11 artifacts::emit layout and verified against the real filesystem (canonicalised root), plus partial=true mid-run peek; score/tests_passed returned as explicit null because the engine renders them into the markdown report only and never persists per-job data, and AC3 (apply patch + tests pass) needs daemon + LLM keys (roadmap §7)
   e3-4-cancel-job-tool: review  # SEAM: durable Queued/Running -> Cancelled transition verified against the real ledger (read_status), idempotent re-cancel returns the same result with no error, and a different terminal state (completed/failed/budget_exhausted) is refused without mutating the job; best_verified_candidate returned as explicit null because the engine computes it in-memory (select_verified_winner) and only persists opaque population JSON, and AC1 (no new model calls after in-flight) needs daemon + LLM keys (roadmap §7)
   e3-5-context-guard: done
-  e3-6-setup-guide: backlog
+  e3-6-setup-guide: review
 
   # Epic 4: Optional Streaming Gateway
   e4-1-transparent-pass-through: review # SEAM: verified against stub upstream (byte-fidelity, error propagation, structural abort); live-provider pass-through needs LLM keys (roadmap §7)

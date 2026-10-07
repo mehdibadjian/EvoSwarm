@@ -20,4 +20,5 @@ scratchpad/
 /target/
 .cargo/
 .rustup/
+.local/
 
