@@ -16,9 +16,11 @@ pub mod feedback;
 pub mod map_elites;
 pub mod mutation;
 pub mod recovery;
+pub mod replay;
 pub mod seeding;
 pub mod selection;
 pub mod selection_mode;
+
 
 pub use adversary::{
     compile_filter, generate as generate_adversary, scoreable, suspect_filter, AdversaryDeps,
@@ -43,6 +45,7 @@ pub use map_elites::{
 };
 pub use mutation::{mutate, MutationContext, MutationDeps, MutationError};
 pub use recovery::{recover, ResumableJob};
+pub use replay::{check_and_execute_replay, ReplayDeps, ReplayOutcome};
 pub use seeding::{
     seed_generation_zero, EmptyMemorySeeder, MemorySeeder, SeedConfig, SeedingDeps, SeedingError,
 };

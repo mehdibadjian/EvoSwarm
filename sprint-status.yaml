@@ -44,7 +44,7 @@ development_status:
   e2-1-content-addressed-blob-store: done
   e2-2-lineage-written-to-falkordb: done
   e2-3-repo-and-toolchain-fingerprints: done
-  e2-4-verified-replay: backlog
+  e2-4-verified-replay: review
   e2-5-seeding-from-similar-winners: backlog
   e2-6-approve-candidate-tests: done
   e2-7-seccomp-filter: done
