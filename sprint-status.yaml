@@ -10,9 +10,9 @@ development_status:
   epic-0: in-progress
   epic-1: in-progress
   epic-2: done
-  epic-3: backlog
+  epic-3: in-progress
   epic-4: done
-  epic-5: backlog
+  epic-5: in-progress
 
   # Epic 0: The Crucible (Sandbox & Isolation)
   e0-1-sandbox-runner-interface: done
