@@ -59,7 +59,22 @@ enum Command {
         #[arg(long)]
         repo: Option<PathBuf>,
     },
+    /// Print candidate lineage ancestry tree or JSON (e2-8).
+    Lineage {
+        /// Job ID to inspect.
+        job_id: String,
+        /// Export as JSON instead of ASCII tree.
+        #[arg(long)]
+        json: bool,
+        /// Path to the lineage retry spool or archive directory; defaults to `<repo>/.evoswarm/lineage_spool`.
+        #[arg(long)]
+        spool_dir: Option<PathBuf>,
+        /// Repository root used to locate the spool directory; defaults to current dir.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
 }
+
 
 #[derive(Clone, Copy, ValueEnum)]
 enum ObjectiveArg {
@@ -156,6 +171,43 @@ async fn main() -> StdExitCode {
                 Ok(report) => {
                     print!("{report}");
                     evoswarm_cli::ExitCode::Ok.to_std()
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    evoswarm_cli::ExitCode::Validation.to_std()
+                }
+            }
+        }
+        Command::Lineage {
+            job_id,
+            json,
+            spool_dir,
+            repo,
+        } => {
+            use evoswarm_cli::lineage::{format_ascii_tree, format_json_export, load_job_lineage};
+
+            let spool_path = spool_dir.unwrap_or_else(|| {
+                repo.unwrap_or_else(|| PathBuf::from("."))
+                    .join(".evoswarm/lineage_spool")
+            });
+
+            match load_job_lineage(&job_id, &spool_path) {
+                Ok(record) => {
+                    if json {
+                        match format_json_export(&record) {
+                            Ok(j) => {
+                                println!("{j}");
+                                evoswarm_cli::ExitCode::Ok.to_std()
+                            }
+                            Err(e) => {
+                                eprintln!("{e}");
+                                evoswarm_cli::ExitCode::Validation.to_std()
+                            }
+                        }
+                    } else {
+                        print!("{}", format_ascii_tree(&record));
+                        evoswarm_cli::ExitCode::Ok.to_std()
+                    }
                 }
                 Err(e) => {
                     eprintln!("{e}");

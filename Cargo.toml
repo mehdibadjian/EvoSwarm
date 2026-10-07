@@ -14,7 +14,7 @@ tempfile = "3"
 uuid = { version = "1", features = ["v4"] }
 clap = { version = "4", features = ["derive"] }
 rusqlite = { version = "0.32", features = ["bundled"] }
-git2 = "0.19"
+git2 = { version = "0.19", default-features = false }
 tokio = { version = "1", features = ["rt", "rt-multi-thread", "signal", "macros", "sync"] }
 evoswarm-core = { path = "crates/evoswarm-core" }
 evoswarm-sandbox = { path = "crates/evoswarm-sandbox" }
