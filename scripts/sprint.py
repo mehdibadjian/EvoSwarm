@@ -99,6 +99,8 @@ class SprintLedger:
         if match:
             prefix = match.group(1)
             comment = match.group(3)
+            if comment and not comment.startswith(" "):
+                comment = " " + comment
             new_line = f"{prefix}{new_status}{comment}"
             new_content = self.raw_content[: match.start()] + new_line + self.raw_content[match.end() :]
         else:
