@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 evoswarm-core = { workspace = true }
+evoswarm-memory = { workspace = true }
 thiserror = { workspace = true }
 async-trait = { workspace = true }
 tokio = { workspace = true, features = ["net", "io-util", "time", "macros", "rt-multi-thread", "sync"] }
