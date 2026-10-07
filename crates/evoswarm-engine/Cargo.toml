@@ -8,6 +8,7 @@ evoswarm-core = { workspace = true }
 evoswarm-ledger = { workspace = true }
 evoswarm-models = { workspace = true }
 evoswarm-sandbox = { workspace = true }
+evoswarm-memory = { workspace = true }
 async-trait = { workspace = true }
 thiserror = { workspace = true }
 serde = { workspace = true }

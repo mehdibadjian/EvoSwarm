@@ -339,6 +339,7 @@ dependencies = [
  "evoswarm-core",
  "evoswarm-fitness",
  "evoswarm-ledger",
+ "evoswarm-memory",
  "evoswarm-models",
  "evoswarm-sandbox",
  "serde",
