@@ -56,16 +56,25 @@ def _read_language(task_md: Path) -> str | None:
     return None
 
 
+def _is_valid_source_file(p: Path) -> bool:
+    return (
+        p.is_file()
+        and p.stat().st_size > 0
+        and "__pycache__" not in p.parts
+        and p.suffix != ".pyc"
+    )
+
+
 def _dir_has_content(path: Path) -> bool:
     if not path.is_dir():
         return False
-    return any(p.is_file() and p.stat().st_size > 0 for p in path.rglob("*"))
+    return any(_is_valid_source_file(p) for p in path.rglob("*"))
 
 
 def _any_file_nonempty(path: Path) -> bool:
     if not path.is_dir():
         return False
-    return any(p.is_file() and p.stat().st_size > 0 for p in path.rglob("*"))
+    return any(_is_valid_source_file(p) for p in path.rglob("*"))
 
 
 def load_suite(tasks_root: Path) -> Suite:
