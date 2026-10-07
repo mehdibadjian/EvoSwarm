@@ -73,7 +73,36 @@ enum Command {
         #[arg(long)]
         repo: Option<PathBuf>,
     },
+    /// Approve candidate tests from a completed job and commit them to a branch (e2-6).
+    ApproveTests {
+        /// Job ID containing the tests.
+        job_id: String,
+        /// Comma-separated test names/IDs to approve.
+        #[arg(long, value_delimiter = ',')]
+        ids: Vec<String>,
+        /// Path to the lineage retry spool or archive directory; defaults to `<repo>/.evoswarm/lineage_spool`.
+        #[arg(long)]
+        spool_dir: Option<PathBuf>,
+        /// Repository root; defaults to current dir.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
+    /// Reject candidate tests so they are not proposed again (e2-6).
+    RejectTests {
+        /// Job ID containing the tests.
+        job_id: String,
+        /// Comma-separated test names/IDs to reject.
+        #[arg(long, value_delimiter = ',')]
+        ids: Vec<String>,
+        /// Path to the lineage retry spool or archive directory; defaults to `<repo>/.evoswarm/lineage_spool`.
+        #[arg(long)]
+        spool_dir: Option<PathBuf>,
+        /// Repository root; defaults to current dir.
+        #[arg(long)]
+        repo: Option<PathBuf>,
+    },
 }
+
 
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -208,6 +237,54 @@ async fn main() -> StdExitCode {
                         print!("{}", format_ascii_tree(&record));
                         evoswarm_cli::ExitCode::Ok.to_std()
                     }
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    evoswarm_cli::ExitCode::Validation.to_std()
+                }
+            }
+        }
+        Command::ApproveTests {
+            job_id,
+            ids,
+            spool_dir,
+            repo,
+        } => {
+            use evoswarm_cli::approve_tests::approve_candidate_tests;
+
+            let repo_path = repo.unwrap_or_else(|| PathBuf::from("."));
+            let spool_path = spool_dir.unwrap_or_else(|| {
+                repo_path.join(".evoswarm/lineage_spool")
+            });
+
+            match approve_candidate_tests(&job_id, &ids, &repo_path, &spool_path) {
+                Ok(branch) => {
+                    println!("Approved tests for {job_id} ({ids:?}) on branch {branch}");
+                    evoswarm_cli::ExitCode::Ok.to_std()
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    evoswarm_cli::ExitCode::Validation.to_std()
+                }
+            }
+        }
+        Command::RejectTests {
+            job_id,
+            ids,
+            spool_dir,
+            repo,
+        } => {
+            use evoswarm_cli::approve_tests::reject_candidate_tests;
+
+            let repo_path = repo.unwrap_or_else(|| PathBuf::from("."));
+            let spool_path = spool_dir.unwrap_or_else(|| {
+                repo_path.join(".evoswarm/lineage_spool")
+            });
+
+            match reject_candidate_tests(&job_id, &ids, &repo_path, &spool_path) {
+                Ok(()) => {
+                    println!("Rejected tests for {job_id} ({ids:?})");
+                    evoswarm_cli::ExitCode::Ok.to_std()
                 }
                 Err(e) => {
                     eprintln!("{e}");
